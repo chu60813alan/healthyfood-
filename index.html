@@ -193,6 +193,37 @@
       border-color: var(--primary);
     }
 
+    .submit-row {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .submit-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .submit-btn:hover {
+      background: #145382;
+    }
+
+    .status-text {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
     .result-box {
       border-radius: 12px;
       padding: 16px 18px;
@@ -397,7 +428,7 @@
         </div>
 
         <div class="section-block">
-          <h3 class="block-heading">蔬菜與補充說明（選填，按 Enter 或點選其他地方後產生建議）</h3>
+          <h3 class="block-heading">蔬菜與補充說明</h3>
           <div class="option-grid" id="veggieGroup" style="margin-bottom: 12px;">
             <button class="choice-btn" data-veggie="lots" type="button">
               🟢 青菜充足（約半盤以上）
@@ -412,7 +443,13 @@
               <span class="sub-label">膳食纖維不足</span>
             </button>
           </div>
-          <input type="text" id="homeNoteInput" placeholder="輸入後按 Enter 或離開此框，例如：湯喝一半、咖哩醬留一半、配無糖綠茶..." />
+          <label for="homeNoteInput" class="block-heading" style="font-size:16px;">補充說明（選填，輸入後按 Enter 或離開此框）</label>
+          <input type="text" id="homeNoteInput" placeholder="例如：湯喝一半、咖哩醬留一半、配無糖綠茶..." />
+        </div>
+
+        <div class="submit-row">
+          <span class="status-text" id="homeProgressText">已選 0 / 3 項（需選完主食、蛋白質、蔬菜後按按鈕產生建議）</span>
+          <button class="submit-btn" id="homeSubmitBtn" type="button">產生家常配餐建議</button>
         </div>
       </div>
 
@@ -521,11 +558,40 @@
       staple: null,
       protein: null,
       veggie: null,
+      homeSubmitted: false,
+      homeIncompleteMsg: "",
       homeNote: "",
       eat: null,
       eatNote: "",
       ff: null,
       ffNote: ""
+    };
+
+    const stapleLight = {
+      whole_grain: "green",
+      root_veg: "green",
+      white_rice: "yellow",
+      soup_noodle: "yellow",
+      sauce_rice: "red",
+      fried_pastry: "red",
+      none: "green"
+    };
+
+    const proteinLight = {
+      included: "yellow",
+      lean_poultry_egg: "green",
+      fish_tofu: "green",
+      shrimp_squid: "green",
+      skin_on_poultry: "yellow",
+      lean_pork_beef: "yellow",
+      duck_lamb: "yellow",
+      fatty_processed: "red"
+    };
+
+    const veggieLight = {
+      lots: "green",
+      little: "yellow",
+      none: "red"
     };
 
     const eatingOutData = {
@@ -795,6 +861,26 @@
       };
     }
 
+    function updateHomeProgressText() {
+      const count = [state.staple, state.protein, state.veggie].filter(Boolean).length;
+      const el = document.getElementById("homeProgressText");
+      el.textContent = `已選 ${count} / 3 項（選完主食、蛋白質、蔬菜後按「產生家常配餐建議」）`;
+    }
+
+    function evaluateHomeBoxClass(lights) {
+      const redCount = lights.filter((l) => l === "red").length;
+      const greenCount = lights.filter((l) => l === "green").length;
+      const yellowCount = lights.filter((l) => l === "yellow").length;
+
+      if (redCount === 0 && yellowCount === 0) return { cls: "green", label: "🟢 整體清爽好掌控" };
+      if (redCount === 0) return { cls: "yellow", label: "🟡 整體尚可，留意份量與做法" };
+      // 只有 1 個紅燈且另外 2 個都是綠燈時，改以黃燈呈現，避免整餐被過度放大成紅燈警示
+      if (redCount === 1 && greenCount === 2) {
+        return { cls: "yellow", label: "🟡 1 項需留意、其餘 2 項表現不錯（建議針對紅燈項微調）" };
+      }
+      return { cls: "red", label: "🔴 需多加警惕，建議控制份量與油脂" };
+    }
+
     function renderRecommendation() {
       const area = document.getElementById("recommendationArea");
       const healthLabel =
@@ -808,22 +894,44 @@
 
       if (state.mode === "home") {
         const noteRes = analyzeNoteText(state.homeNote, state.health);
-        if (!state.staple && !state.protein && !state.veggie && !noteRes) {
-          html = `
-            <div class="result-box info">
-              <div class="result-title">目前狀態：${healthLabel}</div>
-              <p style="margin:0;">請點選上方的「主食」、「蛋白質／主菜」或「蔬菜」；若要填寫補充說明，輸入完按 Enter 或離開輸入框後就會出現建議。</p>
-            </div>
-          `;
+
+        if (!state.homeSubmitted) {
+          if (state.homeIncompleteMsg) {
+            html = `
+              <div class="result-box yellow">
+                <div class="result-title">請先完成三項選擇</div>
+                <p style="margin:0;">${state.homeIncompleteMsg}</p>
+              </div>
+            `;
+          } else {
+            html = `
+              <div class="result-box info">
+                <div class="result-title">目前狀態：${healthLabel}</div>
+                <p style="margin:0;">請先點選<strong>主食</strong>、<strong>蛋白質／主菜</strong>與<strong>蔬菜</strong>（共 3 項），完成後按下「<strong>產生家常配餐建議</strong>」按鈕，就會顯示這餐的評估與建議。</p>
+              </div>
+            `;
+          }
+
+          if (noteRes) {
+            html += `
+              <div class="result-box info">
+                <div class="result-title">補充說明回饋：「${escapeHtml(noteRes.raw)}」</div>
+                <ul>${noteRes.tips.map((t) => `<li>${t}</li>`).join("")}</ul>
+              </div>
+            `;
+          }
         } else {
           const alerts = [];
-          let boxClass = "green";
+          const lights = [
+            stapleLight[state.staple],
+            proteinLight[state.protein],
+            veggieLight[state.veggie]
+          ];
+          const evalRes = evaluateHomeBoxClass(lights);
 
           if (state.staple === "sauce_rice" || state.staple === "fried_pastry") {
-            boxClass = "red";
             alerts.push("主食屬於高油、勾芡或精緻澱粉類：建議減量（例如吃一半或分食），並避免把濃醬/湯汁全吃完。");
           } else if (state.staple === "white_rice" || state.staple === "soup_noodle") {
-            if (boxClass !== "red") boxClass = "yellow";
             alerts.push(
               state.staple === "soup_noodle"
                 ? "湯麵類請留意湯頭油脂與鈉含量，建議少喝湯、先吃料與青菜。"
@@ -836,7 +944,6 @@
           }
 
           if (state.protein === "fatty_processed") {
-            boxClass = "red";
             alerts.push("蛋白質含較多飽和脂肪、肥肉或炸衣：建議去皮、挑瘦肉或減少份量，下餐可改選魚肉、海鮮、豆腐或去皮雞肉。");
           } else if (
             state.protein === "skin_on_poultry" ||
@@ -844,7 +951,6 @@
             state.protein === "duck_lamb" ||
             state.protein === "included"
           ) {
-            if (boxClass !== "red") boxClass = "yellow";
             if (state.protein === "skin_on_poultry") {
               alerts.push("帶皮雞肉（如白斬雞、烤雞腿）：雞肉本身優質，皮含有適量油脂，吃的時候去一部分皮或適量享用即可。");
             } else if (state.protein === "included") {
@@ -867,23 +973,19 @@
           }
 
           if (state.veggie === "none") {
-            boxClass = "red";
             alerts.push("目前幾乎沒有青菜：建議這餐補一份燙青菜或涼拌蔬菜，增加膳食纖維。");
           } else if (state.veggie === "little") {
-            if (boxClass !== "red") boxClass = "yellow";
             alerts.push("青菜偏少：若方便，建議多加一份蔬菜，有助延緩血糖上升與幫助排便/代謝。");
           } else if (state.veggie === "lots") {
             alerts.push("青菜份量充足，是很好的搭配！");
           }
 
-          if (alerts.length > 0) {
-            html += `
-              <div class="result-box ${boxClass}">
-                <div class="result-title">家常配餐建議（對象：${healthLabel}）</div>
-                <ul>${alerts.map((a) => `<li>${a}</li>`).join("")}</ul>
-              </div>
-            `;
-          }
+          html += `
+            <div class="result-box ${evalRes.cls}">
+              <div class="result-title">家常配餐建議・${evalRes.label}（對象：${healthLabel}）</div>
+              <ul>${alerts.map((a) => `<li>${a}</li>`).join("")}</ul>
+            </div>
+          `;
 
           if (noteRes) {
             html += `
@@ -1017,7 +1119,7 @@
     });
 
     // 綁定單選群組
-    function bindSingleSelectGroup(selector, key) {
+    function bindSingleSelectGroup(selector, key, onAfterChange) {
       document.querySelectorAll(`${selector} .choice-btn`).forEach((btn) => {
         btn.addEventListener("click", () => {
           const already = btn.classList.contains("active");
@@ -1028,16 +1130,40 @@
           } else {
             state[key] = null;
           }
+          if (onAfterChange) onAfterChange();
           renderRecommendation();
         });
       });
     }
 
-    bindSingleSelectGroup("#stapleGroup", "staple");
-    bindSingleSelectGroup("#proteinGroup", "protein");
-    bindSingleSelectGroup("#veggieGroup", "veggie");
+    function onHomeSelectionChanged() {
+      state.homeSubmitted = false;
+      state.homeIncompleteMsg = "";
+      updateHomeProgressText();
+    }
+
+    bindSingleSelectGroup("#stapleGroup", "staple", onHomeSelectionChanged);
+    bindSingleSelectGroup("#proteinGroup", "protein", onHomeSelectionChanged);
+    bindSingleSelectGroup("#veggieGroup", "veggie", onHomeSelectionChanged);
     bindSingleSelectGroup("#eatingOutGroup", "eat");
     bindSingleSelectGroup("#fastFoodGroup", "ff");
+
+    // 綁定「產生家常配餐建議」按鈕
+    document.getElementById("homeSubmitBtn").addEventListener("click", () => {
+      const missing = [];
+      if (!state.staple) missing.push("主食");
+      if (!state.protein) missing.push("蛋白質／主菜");
+      if (!state.veggie) missing.push("蔬菜");
+
+      if (missing.length > 0) {
+        state.homeSubmitted = false;
+        state.homeIncompleteMsg = `您目前還缺少：${missing.join("、")}。請把三項都選完再按一次按鈕。`;
+      } else {
+        state.homeIncompleteMsg = "";
+        state.homeSubmitted = true;
+      }
+      renderRecommendation();
+    });
 
     // 綁定補充輸入框：按 Enter 或離開輸入框才更新建議；若清空則立刻移除補充回饋
     function bindNoteInput(inputId, stateKey) {
@@ -1073,6 +1199,8 @@
       state.staple = null;
       state.protein = null;
       state.veggie = null;
+      state.homeSubmitted = false;
+      state.homeIncompleteMsg = "";
       state.homeNote = "";
       state.eat = null;
       state.eatNote = "";
@@ -1086,10 +1214,12 @@
       document.getElementById("eatNoteInput").value = "";
       document.getElementById("ffNoteInput").value = "";
 
+      updateHomeProgressText();
       renderRecommendation();
     });
 
     // 初始渲染
+    updateHomeProgressText();
     renderRecommendation();
   </script>
 </body>
