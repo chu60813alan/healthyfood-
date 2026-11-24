@@ -317,7 +317,7 @@
       <h2 class="card-title">2. 選擇這餐的用餐情境</h2>
       <div class="mode-tabs">
         <button class="mode-tab active" data-mode="home" type="button">🏠 家常／一般配餐</button>
-        <button class="mode-tab" data-mode="eatingout" type="button">🍜 常見外食（9種）</button>
+        <button class="mode-tab" data-mode="eatingout" type="button">🍜 常見外食（10種）</button>
         <button class="mode-tab" data-mode="fastfood" type="button">🍔 連鎖速食專區</button>
       </div>
 
@@ -404,19 +404,50 @@
         </div>
       </div>
 
-      <!-- 模式 B：9 種常見外食 -->
+      <!-- 模式 B：10 種常見外食 -->
       <div id="mode-eatingout" class="hidden">
-        <p class="hint">點選您今天外食的類型，系統會拆解點餐與吃法建議：</p>
+        <p class="hint">點選您今天外食的類型（🟢相對好掌控／🟡需留意份量與做法／🔴高風險需警惕），系統會拆解點餐與吃法建議：</p>
         <div class="option-grid" id="eatingOutGroup">
-          <button class="choice-btn" data-eat="bento" type="button">🍱 自助餐／便當</button>
-          <button class="choice-btn" data-eat="braised_pork" type="button">🍚 滷肉飯／小吃店</button>
-          <button class="choice-btn" data-eat="dumpling" type="button">🥟 水餃／鍋貼</button>
-          <button class="choice-btn" data-eat="luwei" type="button">🍢 滷味／鹹水雞</button>
-          <button class="choice-btn" data-eat="donburi" type="button">🍛 丼飯／定食</button>
-          <button class="choice-btn" data-eat="fried_rice_noodle" type="button">🍳 炒飯／炒麵／燴飯</button>
-          <button class="choice-btn" data-eat="ramen" type="button">🍜 拉麵</button>
-          <button class="choice-btn" data-eat="hotpot" type="button">🍲 火鍋</button>
-          <button class="choice-btn" data-eat="bbq" type="button">🥩 烤肉</button>
+          <button class="choice-btn" data-eat="bento" type="button">
+            🟡 自助餐／便當
+            <span class="sub-label">看主菜與飯量，挑菜好調整</span>
+          </button>
+          <button class="choice-btn" data-eat="braised_pork" type="button">
+            🟡 滷肉飯／小吃店
+            <span class="sub-label">留意肥肉滷汁與澱粉份量</span>
+          </button>
+          <button class="choice-btn" data-eat="dumpling" type="button">
+            🟡 水餃／鍋貼
+            <span class="sub-label">控顆數，水餃比煎鍋貼少油</span>
+          </button>
+          <button class="choice-btn" data-eat="luwei" type="button">
+            🟢 滷味／鹹水雞
+            <span class="sub-label">挑菜與蛋白、少醬少丸餃很穩</span>
+          </button>
+          <button class="choice-btn" data-eat="donburi" type="button">
+            🟡 丼飯／定食
+            <span class="sub-label">留意醬汁甜鹹與飯量比例</span>
+          </button>
+          <button class="choice-btn" data-eat="fried_rice_noodle" type="button">
+            🔴 炒飯／炒麵／燴飯
+            <span class="sub-label">高油、勾芡與澱粉雙重考驗</span>
+          </button>
+          <button class="choice-btn" data-eat="ramen" type="button">
+            🟡 拉麵
+            <span class="sub-label">湯頭油脂與鈉高，少喝湯為先</span>
+          </button>
+          <button class="choice-btn" data-eat="hotpot" type="button">
+            🟢 一般／小火鍋
+            <span class="sub-label">不喝湯、挑原型食材好掌握</span>
+          </button>
+          <button class="choice-btn" data-eat="hotpot_ayce" type="button">
+            🔴 鴛鴦鍋／吃到飽火鍋
+            <span class="sub-label">重油鍋底與吃到飽易過量，需警惕</span>
+          </button>
+          <button class="choice-btn" data-eat="bbq" type="button">
+            🔴 烤肉
+            <span class="sub-label">肥肉、甜醬與過量風險高，需警惕</span>
+          </button>
         </div>
         <div class="section-block">
           <label for="eatNoteInput" class="block-heading">外食補充說明（選填，輸入後即時連動建議）</label>
@@ -487,7 +518,9 @@
 
     const eatingOutData = {
       bento: {
-        name: "🍱 自助餐／便當",
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（需留意主菜做法與飯量）",
+        name: "自助餐／便當",
         pick: "主菜優先選烤魚、滷雞腿（去皮）或滷豆腐；配菜挑至少 2 格深綠色蔬菜或菇類；飯請店家壓少或改半碗。",
         avoid: "炸排骨、炸雞腿、三層肉、重油勾芡菜色，以及淋在飯上的滷汁/肉燥汁。",
         healthTip: {
@@ -497,7 +530,9 @@
         }
       },
       braised_pork: {
-        name: "🍚 滷肉飯／小吃店",
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（需留意肥油滷汁與澱粉比例）",
+        name: "滷肉飯／小吃店",
         pick: "若想吃滷肉飯，建議選「瘦肉較多」或「小碗不淋肥肉汁」，搭配燙青菜、滷蛋、豆干或清湯。",
         avoid: "整碗肥油滷肉汁、香腸、米血、粉蒸肉與含糖冬瓜茶/紅茶。",
         healthTip: {
@@ -507,7 +542,9 @@
         }
       },
       dumpling: {
-        name: "🥟 水餃／鍋貼",
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（需控制顆數與沾醬、煎油）",
+        name: "水餃／鍋貼",
         pick: "水餃通常比煎鍋貼少油；建議控制在 6～8 顆以內，搭配酸辣湯以外的清湯或燙青菜，醬油少加、可加醋提味。",
         avoid: "煎得金黃酥脆、底部帶大量煎油的鍋貼，以及高油高糖的沾醬。",
         healthTip: {
@@ -517,7 +554,9 @@
         }
       },
       luwei: {
-        name: "🍢 滷味／鹹水雞",
+        traffic: "green",
+        trafficText: "🟢 綠燈（相對好掌控，挑對食材與醬料即可）",
+        name: "滷味／鹹水雞",
         pick: "多夾高麗菜、青江菜、花椰菜、菇類、玉米筍、百頁/板豆腐或雞胸肉；請老闆「少醬、不加辣油/香油、不加酸菜/重鹹湯汁」。",
         avoid: "王子麵、科學麵、冬粉過量、貢丸/甜不辣/魚板等加工丸餃，以及雞皮與高油湯汁。",
         healthTip: {
@@ -527,7 +566,9 @@
         }
       },
       donburi: {
-        name: "🍛 丼飯／定食",
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（需留意醬汁甜鹹與飯量）",
+        name: "丼飯／定食",
         pick: "定食通常比丼飯好控制，建議選烤魚定食、薑燒/烤雞定食，飯請少一點；若吃丼飯，醬汁可請店家少淋。",
         avoid: "炸豬排丼、大量洋蔥醬汁淋滿整碗飯，以及加點含糖飲料。",
         healthTip: {
@@ -537,7 +578,9 @@
         }
       },
       fried_rice_noodle: {
-        name: "🍳 炒飯／炒麵／燴飯",
+        traffic: "red",
+        trafficText: "🔴 紅燈（高油、勾芡與澱粉雙重考驗，需特別警惕）",
+        name: "炒飯／炒麵／燴飯",
         pick: "這類餐點炒油與澱粉都高，若吃建議「分食一半」或只吃半份，並額外加點一份燙青菜平衡。",
         avoid: "整份獨自吃完、勾芡濃稠的燴飯/羹麵，以及再配含糖飲料。",
         healthTip: {
@@ -547,8 +590,10 @@
         }
       },
       ramen: {
-        name: "🍜 拉麵",
-        pick: "建議選清湯或醬油/味噌湯底（少選濃豚骨背脂），麵量可選正常或少麵，**湯頭盡量不喝完**，可加點海帶芽、玉米筍或糖心蛋。",
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（需警惕湯頭油脂、鈉含量與麵量）",
+        name: "拉麵",
+        pick: "建議選清湯或醬油/味噌湯底（少選濃豚骨背脂），麵量可選正常或少麵，<strong>湯頭盡量不喝完</strong>，可加點海帶芽、玉米筍或糖心蛋。",
         avoid: "整碗濃郁豚骨/背脂湯喝光、加點叉燒飯或炸雞塊。",
         healthTip: {
           both: "拉麵最大的隱藏負擔在「湯頭油脂與鈉」以及「麵量」，少喝湯、多留半碗湯最關鍵。",
@@ -557,23 +602,39 @@
         }
       },
       hotpot: {
-        name: "🍲 火鍋",
+        traffic: "green",
+        trafficText: "🟢 綠燈（一般/小火鍋相對好掌控，不喝湯與選原型食材是關鍵）",
+        name: "一般／小火鍋",
         pick: "湯底選昆布、蔬菜或番茄鍋；食材多挑高麗菜、娃娃菜、菇類、豆腐、海鮮或雞肉/瘦牛肉片；沾醬用「蔥、蒜、蘿蔔泥、少許醬油與醋」。",
-        avoid: "麻辣鍋/牛奶起司鍋喝湯、沙茶醬整匙、蛋餃/燕餃/鑫鑫腸/魚餃等加工火鍋料、冬粉/王子麵過量。",
+        avoid: "湯頭喝太多、沙茶醬整匙、蛋餃/燕餃/鑫鑫腸/魚餃等加工火鍋料、冬粉/王子麵過量。",
         healthTip: {
-          both: "火鍋非常適合依照順序吃：先煮蔬菜與菇類 → 煮肉/海鮮/豆腐 → 最後視情況吃少量主食。",
+          both: "一般小火鍋只要不喝湯、少加工料，建議先煮蔬菜與菇類 → 煮肉/海鮮/豆腐 → 最後視情況吃少量主食。",
           ldl: "避開沙茶醬、肥牛五花與加工火鍋料，多吃蔬菜與海鮮/豆腐。",
           hba1c: "避開含糖沾醬與過多冬粉/王子麵，先吃菜與肉再吃少量澱粉。"
         }
       },
+      hotpot_ayce: {
+        traffic: "red",
+        trafficText: "🔴 紅燈（重油鍋底與吃到飽易過量，需高度警惕）",
+        name: "鴛鴦鍋／吃到飽火鍋",
+        pick: "若選鴛鴦鍋，一邊盡量挑清湯/昆布/番茄鍋；吃到飽時先拿兩大盤蔬菜與菇類，肉類選瘦牛、雞肉、海鮮與板豆腐，先吃飽再決定是否碰澱粉。",
+        avoid: "麻辣/牛奶/起司等高油高鈉湯底喝湯、五花肉/培根肉狂拿、加工丸餃、含糖飲料與餐後冰品甜點。",
+        healthTip: {
+          both: "吃到飽與鴛鴦鍋最容易同時讓油脂、鈉與碳水超標，務必設定份量上限、不喝重油湯、避開甜品與含糖飲。",
+          ldl: "麻辣/牛奶鍋底、肥肉與加工料飽和脂肪高，建議多選蔬菜、菇類與海鮮，少碰高脂肉品。",
+          hba1c: "吃到飽容易不知不覺吃過量並搭配含糖飲料或甜點，建議嚴格控管澱粉與甜食。"
+        }
+      },
       bbq: {
-        name: "🥩 烤肉",
+        traffic: "red",
+        trafficText: "🔴 紅燈（肥肉、甜醬與過量風險高，需特別警惕）",
+        name: "烤肉",
         pick: "多烤杏鮑菇、青椒、筊白筍、櫛瓜、生菜包肉，肉類挑雞胸/雞腿去皮、海鮮（蝦、蛤蜊、魚片）或瘦肉；烤焦處剪掉不吃。",
         avoid: "五花肉、豬頸肉/松阪肉過量、香腸/培根、甜味烤肉醬刷好幾層，以及含糖飲料。",
         healthTip: {
-          both: "烤肉容易不知不覺吃進過多油脂與甜醬，建議用生菜包肉並搭配無糖茶解膩。",
-          ldl: "五花肉與加工肉品飽和脂肪高，建議多選海鮮、菇類與蔬菜。",
-          hba1c: "烤肉醬常含糖分，建議刷薄一點或沾檸檬汁/椒鹽，減少含糖飲與甜食。"
+          both: "烤肉容易在不知不覺中吃進大量飽和脂肪與糖分醬汁，建議生菜包肉、醬料刷薄、搭配無糖茶。",
+          ldl: "五花肉、豬頸肉與香腸/培根油脂高，建議多選海鮮、菇類與蔬菜。",
+          hba1c: "烤肉醬常含糖分，加上配料或飲料若含糖容易影響血糖，建議減醬並選無糖飲。"
         }
       }
     };
@@ -652,7 +713,7 @@
       pizzahut: {
         name: "🍕 必勝客 推薦點餐法",
         recommend: [
-          "<strong>餅皮與份量</strong>：建議選<strong>薄脆餅皮</strong>（比厚餅皮或起司捲心餅少澱粉與油脂），一次吃 **1～2 片**即可，搭配一份沙拉或蔬菜。",
+          "<strong>餅皮與份量</strong>：建議選<strong>薄脆餅皮</strong>（比厚餅皮或起司捲心餅少澱粉與油脂），一次吃 <strong>1～2 片</strong>即可，搭配一份沙拉或蔬菜。",
           "<strong>口味挑選</strong>：優先選蔬菜、海鮮或雞肉類口味，減少重乳酪與香腸培根堆疊。"
         ],
         avoid: "起司捲心餅/芝心餅皮、一次吃 4 片以上、搭配含糖飲料與大量烤炸副食。",
@@ -665,7 +726,7 @@
       dominos: {
         name: "🍕 達美樂 推薦點餐法",
         recommend: [
-          "<strong>餅皮與份量</strong>：建議選<strong>薄脆餅皮</strong>，控制 **1～2 片**以內，並搭配生菜沙拉或蔬菜湯。",
+          "<strong>餅皮與份量</strong>：建議選<strong>薄脆餅皮</strong>，控制 <strong>1～2 片</strong>以內，並搭配生菜沙拉或蔬菜湯。",
           "<strong>口味挑選</strong>：挑海鮮、菇菇或蔬菜類比薩，減少高脂肉腸與厚重起司。"
         ],
         avoid: "高油厚餅皮/起司餅皮過量、搭配含糖飲料與高熱量炸物拼盤。",
@@ -682,7 +743,6 @@
       if (!clean) return null;
 
       const tips = [];
-      const lower = clean.toLowerCase();
 
       if (clean.includes("無糖") || clean.includes("綠茶") || clean.includes("紅茶") || clean.includes("黑咖啡") || clean.includes("水")) {
         tips.push("您提到改搭配無糖飲或開水，這對穩定血糖與減少多餘熱量很有幫助。");
@@ -810,15 +870,15 @@
           html = `
             <div class="result-box info">
               <div class="result-title">目前狀態：${healthLabel}</div>
-              <p style="margin:0;">請點選上方 9 種常見外食之一（如自助餐、滷肉飯、拉麵、火鍋、烤肉等），即可查看點餐與吃法建議。</p>
+              <p style="margin:0;">請點選上方 10 種常見外食之一（🟢好掌控／🟡需留意／🔴高風險），即可查看對應燈號與點餐建議。</p>
             </div>
           `;
         } else {
           if (state.eat) {
             const item = eatingOutData[state.eat];
             html += `
-              <div class="result-box yellow">
-                <div class="result-title">${item.name}（對象：${healthLabel}）</div>
+              <div class="result-box ${item.traffic}">
+                <div class="result-title">${item.name}・${item.trafficText}（對象：${healthLabel}）</div>
                 <ul>
                   <li><strong>怎麼點／怎麼挑：</strong>${item.pick}</li>
                   <li><strong>建議避開：</strong>${item.avoid}</li>
@@ -921,7 +981,7 @@
       });
     });
 
-    // 綁定家常選項
+    // 綁定單選群組
     function bindSingleSelectGroup(selector, key) {
       document.querySelectorAll(`${selector} .choice-btn`).forEach((btn) => {
         btn.addEventListener("click", () => {
