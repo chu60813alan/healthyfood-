@@ -385,7 +385,7 @@
         </div>
 
         <div class="section-block">
-          <h3 class="block-heading">蔬菜與補充說明（選填，輸入後會即時反映在建議中）</h3>
+          <h3 class="block-heading">蔬菜與補充說明（選填，按 Enter 或點選其他地方後產生建議）</h3>
           <div class="option-grid" id="veggieGroup" style="margin-bottom: 12px;">
             <button class="choice-btn" data-veggie="lots" type="button">
               🟢 青菜充足（約半盤以上）
@@ -400,7 +400,7 @@
               <span class="sub-label">膳食纖維不足</span>
             </button>
           </div>
-          <input type="text" id="homeNoteInput" placeholder="例如：湯喝一半、咖哩醬留一半、配無糖綠茶、有加一顆蛋..." />
+          <input type="text" id="homeNoteInput" placeholder="輸入後按 Enter 或離開此框，例如：湯喝一半、咖哩醬留一半、配無糖綠茶..." />
         </div>
       </div>
 
@@ -450,8 +450,8 @@
           </button>
         </div>
         <div class="section-block">
-          <label for="eatNoteInput" class="block-heading">外食補充說明（選填，輸入後即時連動建議）</label>
-          <input type="text" id="eatNoteInput" placeholder="例如：飯少一半、不喝湯、醬料另外放、加點燙青菜..." />
+          <label for="eatNoteInput" class="block-heading">外食補充說明（選填，輸入完成按 Enter 或點選其他地方後產生建議）</label>
+          <input type="text" id="eatNoteInput" placeholder="輸入後按 Enter 或離開此框，例如：飯少一半、不喝湯、醬料另外放..." />
         </div>
       </div>
 
@@ -489,8 +489,8 @@
           </button>
         </div>
         <div class="section-block">
-          <label for="ffNoteInput" class="block-heading">速食點餐補充（選填，輸入後會即時產生對應提醒）</label>
-          <input type="text" id="ffNoteInput" placeholder="例如：單點不配套餐、改無糖綠茶、只吃一塊炸雞、薯條改沙拉..." />
+          <label for="ffNoteInput" class="block-heading">速食點餐補充（選填，輸入完成按 Enter 或點選其他地方後產生建議）</label>
+          <input type="text" id="ffNoteInput" placeholder="輸入後按 Enter 或離開此框，例如：單點不配套餐、改無糖綠茶、只吃一塊炸雞..." />
         </div>
       </div>
     </section>
@@ -738,9 +738,13 @@
       }
     };
 
+    function isIncompletePhonetic(str) {
+      return /^[ㄅ-ㄩˊˋˇ˙\s]+$/u.test(str);
+    }
+
     function analyzeNoteText(noteText, health) {
       const clean = (noteText || "").trim();
-      if (!clean) return null;
+      if (!clean || isIncompletePhonetic(clean)) return null;
 
       const tips = [];
 
@@ -791,11 +795,12 @@
       let html = "";
 
       if (state.mode === "home") {
-        if (!state.staple && !state.protein && !state.veggie && !state.homeNote.trim()) {
+        const noteRes = analyzeNoteText(state.homeNote, state.health);
+        if (!state.staple && !state.protein && !state.veggie && !noteRes) {
           html = `
             <div class="result-box info">
               <div class="result-title">目前狀態：${healthLabel}</div>
-              <p style="margin:0;">請點選上方的「主食」、「蛋白質／主菜」或「蔬菜」，或在下方輸入補充說明，系統就會立刻跳出建議。</p>
+              <p style="margin:0;">請點選上方的「主食」、「蛋白質／主菜」或「蔬菜」；若要填寫補充說明，輸入完按 Enter 或離開輸入框後就會出現建議。</p>
             </div>
           `;
         } else {
@@ -842,14 +847,15 @@
             alerts.push("青菜份量充足，是很好的搭配！");
           }
 
-          html += `
-            <div class="result-box ${boxClass}">
-              <div class="result-title">家常配餐建議（對象：${healthLabel}）</div>
-              <ul>${alerts.map((a) => `<li>${a}</li>`).join("")}</ul>
-            </div>
-          `;
+          if (alerts.length > 0) {
+            html += `
+              <div class="result-box ${boxClass}">
+                <div class="result-title">家常配餐建議（對象：${healthLabel}）</div>
+                <ul>${alerts.map((a) => `<li>${a}</li>`).join("")}</ul>
+              </div>
+            `;
+          }
 
-          const noteRes = analyzeNoteText(state.homeNote, state.health);
           if (noteRes) {
             html += `
               <div class="result-box info">
@@ -866,7 +872,8 @@
           `;
         }
       } else if (state.mode === "eatingout") {
-        if (!state.eat && !state.eatNote.trim()) {
+        const noteRes = analyzeNoteText(state.eatNote, state.health);
+        if (!state.eat && !noteRes) {
           html = `
             <div class="result-box info">
               <div class="result-title">目前狀態：${healthLabel}</div>
@@ -888,7 +895,6 @@
             `;
           }
 
-          const noteRes = analyzeNoteText(state.eatNote, state.health);
           if (noteRes) {
             html += `
               <div class="result-box info">
@@ -905,11 +911,12 @@
           `;
         }
       } else if (state.mode === "fastfood") {
-        if (!state.ff && !state.ffNote.trim()) {
+        const noteRes = analyzeNoteText(state.ffNote, state.health);
+        if (!state.ff && !noteRes) {
           html = `
             <div class="result-box info">
               <div class="result-title">目前狀態：${healthLabel}</div>
-              <p style="margin:0;">請點選上方的速食品牌（例如「麥當勞」或「SUBWAY」），系統會顯示推薦點餐組合；您也可以在下方輸入「單點、改無糖綠茶、只吃一塊炸雞」等補充，會即時產生提醒。</p>
+              <p style="margin:0;">請點選上方的速食品牌（例如「麥當勞」或「SUBWAY」），系統會顯示推薦點餐組合；若要補充說明，輸入完按 Enter 或離開輸入框後會出現對應提醒。</p>
             </div>
           `;
         } else {
@@ -927,7 +934,6 @@
             `;
           }
 
-          const noteRes = analyzeNoteText(state.ffNote, state.health);
           if (noteRes) {
             html += `
               <div class="result-box info">
@@ -1004,21 +1010,34 @@
     bindSingleSelectGroup("#eatingOutGroup", "eat");
     bindSingleSelectGroup("#fastFoodGroup", "ff");
 
-    // 綁定即時文字輸入
-    document.getElementById("homeNoteInput").addEventListener("input", (e) => {
-      state.homeNote = e.target.value;
-      renderRecommendation();
-    });
+    // 綁定補充輸入框：按 Enter 或離開輸入框才更新建議；若清空則立刻移除補充回饋
+    function bindNoteInput(inputId, stateKey) {
+      const el = document.getElementById(inputId);
 
-    document.getElementById("eatNoteInput").addEventListener("input", (e) => {
-      state.eatNote = e.target.value;
-      renderRecommendation();
-    });
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.isComposing) {
+          e.preventDefault();
+          state[stateKey] = el.value;
+          renderRecommendation();
+        }
+      });
 
-    document.getElementById("ffNoteInput").addEventListener("input", (e) => {
-      state.ffNote = e.target.value;
-      renderRecommendation();
-    });
+      el.addEventListener("change", () => {
+        state[stateKey] = el.value;
+        renderRecommendation();
+      });
+
+      el.addEventListener("input", () => {
+        if (el.value.trim() === "") {
+          state[stateKey] = "";
+          renderRecommendation();
+        }
+      });
+    }
+
+    bindNoteInput("homeNoteInput", "homeNote");
+    bindNoteInput("eatNoteInput", "eatNote");
+    bindNoteInput("ffNoteInput", "ffNote");
 
     // 清除按鈕
     document.getElementById("resetBtn").addEventListener("click", () => {
