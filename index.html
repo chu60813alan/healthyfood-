@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>食安心控 - 飯前飲食智慧小助手</title>
+  <style>
+    :root {
+      --bg: #f4f7f5;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #52606d;
+      --primary: #1b6ca8;
+      --primary-soft: #e6f0f8;
+      --border: #d9e2ec;
+      --green-bg: #e6f4ea;
+      --green-text: #137333;
+      --green-border: #81c995;
+      --yellow-bg: #fef7e0;
+      --yellow-text: #9a6700;
+      --yellow-border: #fbbc04;
+      --red-bg: #fce8e6;
+      --red-text: #c5221f;
+      --red-border: #f28b82;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 20px 16px 64px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1b6ca8, #2b8a88);
+      color: #fff;
+      padding: 24px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 18px;
+      box-shadow: 0 4px 14px rgba(27, 108, 168, 0.16);
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.3;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-title {
+      font-size: 21px;
+      font-weight: 700;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hint {
+      font-size: 15px;
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .choice-btn {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px;
+      font-size: 17px;
+      line-height: 1.45;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-weight: 600;
+    }
+
+    .choice-btn:hover {
+      border-color: var(--primary);
+      background: #f8fbff;
+    }
+
+    .choice-btn.active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: 0 0 0 2px rgba(27, 108, 168, 0.15);
+    }
+
+    .sub-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 680px) {
+      .mode-tabs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mode-tab {
+      padding: 14px 12px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .mode-tab.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .section-block {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .section-block:first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .block-heading {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 13px 15px;
+      font-size: 17px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: #fff;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+    }
+
+    .result-box {
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      border: 2px solid var(--border);
+      background: #fafbfc;
+    }
+
+    .result-box.green {
+      background: var(--green-bg);
+      border-color: var(--green-border);
+      color: var(--green-text);
+    }
+
+    .result-box.yellow {
+      background: var(--yellow-bg);
+      border-color: var(--yellow-border);
+      color: var(--yellow-text);
+    }
+
+    .result-box.red {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+    }
+
+    .result-box.info {
+      background: #f0f7ff;
+      border-color: #90cdf4;
+      color: #1a365d;
+    }
+
+    .result-title {
+      font-size: 19px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .result-box ul {
+      margin: 6px 0 0;
+      padding-left: 20px;
+    }
+
+    .result-box li {
+      margin-bottom: 6px;
+      font-size: 17px;
+    }
+
+    .order-banner {
+      background: #eef6f5;
+      border: 2px solid #76b5b0;
+      color: #134e4a;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .reset-btn {
+      background: #fff;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .reset-btn:hover {
+      background: #f1f5f9;
+      color: var(--text);
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>食安心控 — 飯前飲食智慧小助手</h1>
+      <p>針對 LDL（壞膽固醇）與 HbA1c（糖化血色素）設計，吃飯前花 10 秒點選，快速取得實用搭配與點餐建議。</p>
+    </header>
+
+    <!-- 1. 健康狀態 -->
+    <section class="card">
+      <div class="top-actions">
+        <h2 class="card-title" style="margin:0;">1. 選擇目前的健康關注重點</h2>
+        <button class="reset-btn" id="resetBtn" type="button">清除目前選擇</button>
+      </div>
+      <p class="hint">系統會依您的健康狀況調整提醒重點（例如 HbA1c 偏高會更留意澱粉份量與含糖飲；LDL 偏高會更留意飽和脂肪與油炸）。</p>
+      <div class="option-grid" id="healthGroup">
+        <button class="choice-btn active" data-health="both" type="button">
+          LDL ＋ HbA1c 雙高
+          <span class="sub-label">同時顧好血脂與血糖</span>
+        </button>
+        <button class="choice-btn" data-health="ldl" type="button">
+          LDL 偏高
+          <span class="sub-label">重視少油、少飽和脂肪與高纖</span>
+        </button>
+        <button class="choice-btn" data-health="hba1c" type="button">
+          HbA1c 偏高
+          <span class="sub-label">重視控澱粉、減糖與進食順序</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. 模式切換 -->
+    <section class="card">
+      <h2 class="card-title">2. 選擇這餐的用餐情境</h2>
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="home" type="button">🏠 家常／一般配餐</button>
+        <button class="mode-tab" data-mode="eatingout" type="button">🍜 常見外食（9種）</button>
+        <button class="mode-tab" data-mode="fastfood" type="button">🍔 連鎖速食專區</button>
+      </div>
+
+      <!-- 模式 A：家常／一般配餐 -->
+      <div id="mode-home">
+        <div class="section-block">
+          <h3 class="block-heading">主食（澱粉）</h3>
+          <div class="option-grid" id="stapleGroup">
+            <button class="choice-btn" data-staple="whole_grain" type="button">
+              🟢 糙米／五穀／燕麥飯
+              <span class="sub-label">高纖、升糖較慢</span>
+            </button>
+            <button class="choice-btn" data-staple="root_veg" type="button">
+              🟢 地瓜／南瓜／芋頭
+              <span class="sub-label">天然根莖澱粉，注意份量</span>
+            </button>
+            <button class="choice-btn" data-staple="white_rice" type="button">
+              🟡 白飯／白麵／饅頭
+              <span class="sub-label">常見主食，建議控制半碗～2/3碗</span>
+            </button>
+            <button class="choice-btn" data-staple="soup_noodle" type="button">
+              🟡 湯麵類（牛肉麵、陽春麵）
+              <span class="sub-label">注意湯頭油脂與鈉含量</span>
+            </button>
+            <button class="choice-btn" data-staple="sauce_rice" type="button">
+              🔴 醬汁／咖哩／燴飯類
+              <span class="sub-label">常見勾芡、濃醬與隱藏油脂</span>
+            </button>
+            <button class="choice-btn" data-staple="fried_pastry" type="button">
+              🔴 炒飯／炒麵／麵包糕點
+              <span class="sub-label">油脂與精緻澱粉偏高</span>
+            </button>
+            <button class="choice-btn" data-staple="none" type="button">
+              🟢 不吃主食／無澱粉
+              <span class="sub-label">今天沒有吃飯、麵或麵包</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="block-heading">蛋白質／主菜</h3>
+          <p class="hint">如果主食選了「牛肉麵、咖哩飯、燴飯、炒飯/炒麵」且肉類已經在裡面，可直接點選「已含在主食中」。</p>
+          <div class="option-grid" id="proteinGroup">
+            <button class="choice-btn" data-protein="included" type="button">
+              🟡 已含在主食中
+              <span class="sub-label">如牛肉麵、咖哩飯、燴飯內含的肉</span>
+            </button>
+            <button class="choice-btn" data-protein="fish_tofu" type="button">
+              🟢 魚肉／海鮮／豆腐／豆干
+              <span class="sub-label">低飽和脂肪或植物性蛋白</span>
+            </button>
+            <button class="choice-btn" data-protein="lean_poultry_egg" type="button">
+              🟢 去皮雞肉／雞蛋／無糖豆漿
+              <span class="sub-label">優質蛋白質來源</span>
+            </button>
+            <button class="choice-btn" data-protein="lean_pork_beef" type="button">
+              🟡 瘦豬肉／瘦牛肉
+              <span class="sub-label">適量食用，挑去肥油</span>
+            </button>
+            <button class="choice-btn" data-protein="fatty_processed" type="button">
+              🔴 五花肉／培根／香腸／炸物
+              <span class="sub-label">飽和脂肪或炸衣油脂高</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="block-heading">蔬菜與補充說明（選填，輸入後會即時反映在建議中）</h3>
+          <div class="option-grid" id="veggieGroup" style="margin-bottom: 12px;">
+            <button class="choice-btn" data-veggie="lots" type="button">
+              🟢 青菜充足（約半盤以上）
+              <span class="sub-label">含深綠菜、菇類或木耳</span>
+            </button>
+            <button class="choice-btn" data-veggie="little" type="button">
+              🟡 只有一點青菜
+              <span class="sub-label">份量偏少，建議補菜</span>
+            </button>
+            <button class="choice-btn" data-veggie="none" type="button">
+              🔴 幾乎沒有青菜
+              <span class="sub-label">膳食纖維不足</span>
+            </button>
+          </div>
+          <input type="text" id="homeNoteInput" placeholder="例如：湯喝一半、咖哩醬留一半、配無糖綠茶、有加一顆蛋..." />
+        </div>
+      </div>
+
+      <!-- 模式 B：9 種常見外食 -->
+      <div id="mode-eatingout" class="hidden">
+        <p class="hint">點選您今天外食的類型，系統會拆解點餐與吃法建議：</p>
+        <div class="option-grid" id="eatingOutGroup">
+          <button class="choice-btn" data-eat="bento" type="button">🍱 自助餐／便當</button>
+          <button class="choice-btn" data-eat="braised_pork" type="button">🍚 滷肉飯／小吃店</button>
+          <button class="choice-btn" data-eat="dumpling" type="button">🥟 水餃／鍋貼</button>
+          <button class="choice-btn" data-eat="luwei" type="button">🍢 滷味／鹹水雞</button>
+          <button class="choice-btn" data-eat="donburi" type="button">🍛 丼飯／定食</button>
+          <button class="choice-btn" data-eat="fried_rice_noodle" type="button">🍳 炒飯／炒麵／燴飯</button>
+          <button class="choice-btn" data-eat="ramen" type="button">🍜 拉麵</button>
+          <button class="choice-btn" data-eat="hotpot" type="button">🍲 火鍋</button>
+          <button class="choice-btn" data-eat="bbq" type="button">🥩 烤肉</button>
+        </div>
+        <div class="section-block">
+          <label for="eatNoteInput" class="block-heading">外食補充說明（選填，輸入後即時連動建議）</label>
+          <input type="text" id="eatNoteInput" placeholder="例如：飯少一半、不喝湯、醬料另外放、加點燙青菜..." />
+        </div>
+      </div>
+
+      <!-- 模式 C：連鎖速食專區 -->
+      <div id="mode-fastfood" class="hidden">
+        <p class="hint">點選連鎖速食品牌，即可看到「怎麼點、怎麼挑、怎麼吃」的具體建議：</p>
+        <div class="option-grid" id="fastFoodGroup">
+          <button class="choice-btn" data-ff="mcdonalds" type="button">
+            🍟 麥當勞
+            <span class="sub-label">漢堡／雞塊／沙拉／玉米湯</span>
+          </button>
+          <button class="choice-btn" data-ff="subway" type="button">
+            🥖 SUBWAY
+            <span class="sub-label">潛艇堡／麵包與醬料挑選</span>
+          </button>
+          <button class="choice-btn" data-ff="mos" type="button">
+            🍔 摩斯漢堡
+            <span class="sub-label">米漢堡／沙拉／紅茶與湯品</span>
+          </button>
+          <button class="choice-btn" data-ff="kfc" type="button">
+            🍗 肯德基
+            <span class="sub-label">炸雞／蛋撻／配餐替換</span>
+          </button>
+          <button class="choice-btn" data-ff="burgerking" type="button">
+            👑 漢堡王
+            <span class="sub-label">火烤漢堡／配餐與飲料選擇</span>
+          </button>
+          <button class="choice-btn" data-ff="pizzahut" type="button">
+            🍕 必勝客
+            <span class="sub-label">比薩餅皮／副食與分享吃法</span>
+          </button>
+          <button class="choice-btn" data-ff="dominos" type="button">
+            🍕 達美樂
+            <span class="sub-label">比薩／烤雞／控制份量</span>
+          </button>
+        </div>
+        <div class="section-block">
+          <label for="ffNoteInput" class="block-heading">速食點餐補充（選填，輸入後會即時產生對應提醒）</label>
+          <input type="text" id="ffNoteInput" placeholder="例如：單點不配套餐、改無糖綠茶、只吃一塊炸雞、薯條改沙拉..." />
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 建議輸出區 -->
+    <section class="card">
+      <h2 class="card-title">3. 您的飯前飲食與點餐建議</h2>
+      <div id="recommendationArea"></div>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      health: "both",
+      mode: "home",
+      staple: null,
+      protein: null,
+      veggie: null,
+      homeNote: "",
+      eat: null,
+      eatNote: "",
+      ff: null,
+      ffNote: ""
+    };
+
+    const eatingOutData = {
+      bento: {
+        name: "🍱 自助餐／便當",
+        pick: "主菜優先選烤魚、滷雞腿（去皮）或滷豆腐；配菜挑至少 2 格深綠色蔬菜或菇類；飯請店家壓少或改半碗。",
+        avoid: "炸排骨、炸雞腿、三層肉、重油勾芡菜色，以及淋在飯上的滷汁/肉燥汁。",
+        healthTip: {
+          both: "雙高族群建議「飯少半碗＋雙青菜＋去皮主菜」，先吃菜與肉再吃飯。",
+          ldl: "重點避開油炸主菜與肥肉，多挑黑木耳、海帶、青菜幫助代謝膽固醇。",
+          hba1c: "白飯份量是血糖關鍵，可減半或改搭豆干、蛋、蔬菜增加飽足感。"
+        }
+      },
+      braised_pork: {
+        name: "🍚 滷肉飯／小吃店",
+        pick: "若想吃滷肉飯，建議選「瘦肉較多」或「小碗不淋肥肉汁」，搭配燙青菜、滷蛋、豆干或清湯。",
+        avoid: "整碗肥油滷肉汁、香腸、米血、粉蒸肉與含糖冬瓜茶/紅茶。",
+        healthTip: {
+          both: "肥肉油脂加上白飯容易讓血脂與血糖同時承擔較大負擔，建議配一盤燙青菜並減飯量。",
+          ldl: "肥滷肉與滷汁飽和脂肪高，建議改點乾麵少油或湯麵少喝湯，搭配青菜與豆干。",
+          hba1c: "小吃店澱粉比例高，建議搭配蛋白質（蛋/豆干）與青菜，避免單吃一大碗飯或麵。"
+        }
+      },
+      dumpling: {
+        name: "🥟 水餃／鍋貼",
+        pick: "水餃通常比煎鍋貼少油；建議控制在 6～8 顆以內，搭配酸辣湯以外的清湯或燙青菜，醬油少加、可加醋提味。",
+        avoid: "煎得金黃酥脆、底部帶大量煎油的鍋貼，以及高油高糖的沾醬。",
+        healthTip: {
+          both: "水餃皮是澱粉、內餡常含肥豬肉與高鈉，建議限量吃並補一份青菜。",
+          ldl: "鍋貼煎油與豬肉餡油脂較高，優先選水餃並控制顆數。",
+          hba1c: "每顆水餃/鍋貼都含麵粉皮，建議限量顆數並先吃青菜。"
+        }
+      },
+      luwei: {
+        name: "🍢 滷味／鹹水雞",
+        pick: "多夾高麗菜、青江菜、花椰菜、菇類、玉米筍、百頁/板豆腐或雞胸肉；請老闆「少醬、不加辣油/香油、不加酸菜/重鹹湯汁」。",
+        avoid: "王子麵、科學麵、冬粉過量、貢丸/甜不辣/魚板等加工丸餃，以及雞皮與高油湯汁。",
+        healthTip: {
+          both: "滷味與鹹水雞很好調整，關鍵在「多青菜＋少加工丸餃＋醬汁減量」。",
+          ldl: "避開雞皮、肥腸、加工丸餃與香油/辣油，多選蔬菜與豆腐。",
+          hba1c: "留意王子麵、冬粉、甜不辣與甜醬汁，優先吃蔬菜與肉蛋豆類。"
+        }
+      },
+      donburi: {
+        name: "🍛 丼飯／定食",
+        pick: "定食通常比丼飯好控制，建議選烤魚定食、薑燒/烤雞定食，飯請少一點；若吃丼飯，醬汁可請店家少淋。",
+        avoid: "炸豬排丼、大量洋蔥醬汁淋滿整碗飯，以及加點含糖飲料。",
+        healthTip: {
+          both: "丼飯醬汁常帶甜味與油脂，建議醬汁減量、飯量適中，並把配菜/沙拉吃完。",
+          ldl: "避開炸豬排與炸雞丼，改選烤魚或烤雞類主菜。",
+          hba1c: "醬汁甜度與白飯份量會影響餐後血糖，建議先吃沙拉/配菜再吃飯。"
+        }
+      },
+      fried_rice_noodle: {
+        name: "🍳 炒飯／炒麵／燴飯",
+        pick: "這類餐點炒油與澱粉都高，若吃建議「分食一半」或只吃半份，並額外加點一份燙青菜平衡。",
+        avoid: "整份獨自吃完、勾芡濃稠的燴飯/羹麵，以及再配含糖飲料。",
+        healthTip: {
+          both: "炒飯/炒麵/燴飯屬於高油高碳水組合，份量減半並加青菜是最實際的做法。",
+          ldl: "翻炒用油與勾芡醬汁油脂高，建議減量並搭高纖青菜。",
+          hba1c: "麵條/米飯加上勾芡澱粉容易讓血糖上升較快，建議減量並搭配蔬菜與蛋白質。"
+        }
+      },
+      ramen: {
+        name: "🍜 拉麵",
+        pick: "建議選清湯或醬油/味噌湯底（少選濃豚骨背脂），麵量可選正常或少麵，**湯頭盡量不喝完**，可加點海帶芽、玉米筍或糖心蛋。",
+        avoid: "整碗濃郁豚骨/背脂湯喝光、加點叉燒飯或炸雞塊。",
+        healthTip: {
+          both: "拉麵最大的隱藏負擔在「湯頭油脂與鈉」以及「麵量」，少喝湯、多留半碗湯最關鍵。",
+          ldl: "豚骨背脂湯頭飽和脂肪高，建議選較清爽湯底且少喝湯。",
+          hba1c: "拉麵是精緻澱粉，建議先吃配菜/蛋/肉，麵量適中且不配飯類。"
+        }
+      },
+      hotpot: {
+        name: "🍲 火鍋",
+        pick: "湯底選昆布、蔬菜或番茄鍋；食材多挑高麗菜、娃娃菜、菇類、豆腐、海鮮或雞肉/瘦牛肉片；沾醬用「蔥、蒜、蘿蔔泥、少許醬油與醋」。",
+        avoid: "麻辣鍋/牛奶起司鍋喝湯、沙茶醬整匙、蛋餃/燕餃/鑫鑫腸/魚餃等加工火鍋料、冬粉/王子麵過量。",
+        healthTip: {
+          both: "火鍋非常適合依照順序吃：先煮蔬菜與菇類 → 煮肉/海鮮/豆腐 → 最後視情況吃少量主食。",
+          ldl: "避開沙茶醬、肥牛五花與加工火鍋料，多吃蔬菜與海鮮/豆腐。",
+          hba1c: "避開含糖沾醬與過多冬粉/王子麵，先吃菜與肉再吃少量澱粉。"
+        }
+      },
+      bbq: {
+        name: "🥩 烤肉",
+        pick: "多烤杏鮑菇、青椒、筊白筍、櫛瓜、生菜包肉，肉類挑雞胸/雞腿去皮、海鮮（蝦、蛤蜊、魚片）或瘦肉；烤焦處剪掉不吃。",
+        avoid: "五花肉、豬頸肉/松阪肉過量、香腸/培根、甜味烤肉醬刷好幾層，以及含糖飲料。",
+        healthTip: {
+          both: "烤肉容易不知不覺吃進過多油脂與甜醬，建議用生菜包肉並搭配無糖茶解膩。",
+          ldl: "五花肉與加工肉品飽和脂肪高，建議多選海鮮、菇類與蔬菜。",
+          hba1c: "烤肉醬常含糖分，建議刷薄一點或沾檸檬汁/椒鹽，減少含糖飲與甜食。"
+        }
+      }
+    };
+
+    const fastFoodData = {
+      mcdonalds: {
+        name: "🍟 麥當勞 推薦點餐法",
+        recommend: [
+          "<strong>主餐方向</strong>：可選板烤鷄腿堡（去部分醬汁）、嫩煎鷄腿堡，或單點漢堡搭配生菜/配餐調整。",
+          "<strong>配餐／飲料方向</strong>：飲料選<strong>無糖綠茶、無糖紅茶或黑咖啡</strong>；配餐可考慮玉米湯（適量）或將薯條改為沙拉／與他人分食。",
+          "<strong>吃法小技巧</strong>：漢堡醬料若偏多可稍微擦掉一些，先吃蔬菜與肉再吃麵包。"
+        ],
+        avoid: "大薯、麥克鷄塊大量吃、含糖可樂/奶茶、冰炫風或派類點心。",
+        healthTip: {
+          both: "麥當勞最容易超標的是「含糖飲料＋大份炸物」，改無糖飲並控制炸物份量就能差很多。",
+          ldl: "少選油炸主餐與大份薯條，優先挑非油炸雞肉或控制份量。",
+          hba1c: "避開含糖飲料與甜品，麵包與配餐份量注意控制，搭配無糖飲。"
+        }
+      },
+      subway: {
+        name: "🥖 SUBWAY 推薦點餐法",
+        recommend: [
+          "<strong>麵包選擇</strong>：優先選<strong>全麥麵包或蜂蜜燕麥</strong>（6吋份量較容易控制）。",
+          "<strong>主菜選擇</strong>：推薦<strong>火雞胸肉、嫩切雞肉或鮪魚（少美乃滋）</strong>。",
+          "<strong>蔬菜與醬料</strong>：生菜、番茄、小黃瓜、甜椒、洋蔥、酸黃瓜<strong>請店員加滿</strong>；醬料選<strong>油醋醬、黃芥末或紅酒醋</strong>，避免美乃滋、酪梨醬或甜醬（如蜂蜜芥末過量）。"
+        ],
+        avoid: "帕瑪森起司醬/美乃滋加爆、培根/香腸類組合、餅乾與含糖汽水。",
+        healthTip: {
+          both: "SUBWAY 很適合控糖與顧血脂，重點是「蔬菜加滿＋清爽醬料＋無糖飲」。",
+          ldl: "避開美乃滋與高脂加工肉，選雞胸/火雞胸並加滿蔬菜。",
+          hba1c: "選 6 吋全麥麵包並加滿蔬菜，能延緩澱粉吸收，飲料選無糖茶或水。"
+        }
+      },
+      mos: {
+        name: "🍔 摩斯漢堡 推薦點餐法",
+        recommend: [
+          "<strong>主餐方向</strong>：可考慮海洋珍珠堡/藜麥燒肉珍珠堡等米漢堡（注意米飯份量），或搭配和風炸雞/漢堡時控制份量並加點沙拉。",
+          "<strong>配餐／飲料方向</strong>：飲料選<strong>無糖綠茶、冰紅茶（無糖）或熱紅茶不加糖</strong>；配菜可選和風炸雞以外的蔬菜沙拉或湯品。",
+          "<strong>吃法小技巧</strong>：先吃生菜沙拉，再吃主餐。"
+        ],
+        avoid: "含糖紅茶/奶茶、金黃薯條/雞塊過量、加點甜醬或炸物雙拼。",
+        healthTip: {
+          both: "摩斯有許多蔬菜沙拉與無糖茶選項，善用「沙拉＋無糖茶」搭配主餐會更穩妥。",
+          ldl: "控制炸物份量，多選蔬菜沙拉與清淡配餐。",
+          hba1c: "米漢堡也是澱粉，建議搭配蔬菜一起吃，飲料務必選無糖。"
+        }
+      },
+      kfc: {
+        name: "🍗 肯德基 推薦點餐法",
+        recommend: [
+          "<strong>主餐方向</strong>：若想吃炸雞，建議<strong>控制在 1～2 塊以內</strong>，吃之前可先將部分炸雞皮剝除，或選烤類/捲類餐點。",
+          "<strong>配餐／飲料方向</strong>：飲料選<strong>無糖綠茶或無糖紅茶</strong>；配餐可挑玉米濃湯（適量）或沙拉。",
+          "<strong>吃法小技巧</strong>：不要把整份炸雞＋蛋撻＋含糖飲料一次全包。"
+        ],
+        avoid: "炸雞吃多塊＋蛋撻＋含糖汽水組合。",
+        healthTip: {
+          both: "炸雞皮油脂高、蛋撻有酥油與糖分，建議炸雞限量、蛋撻先放一邊或分食，飲料選無糖。",
+          ldl: "炸雞皮與酥皮蛋撻飽和脂肪高，去皮與減量很重要。",
+          hba1c: "蛋撻與含糖飲料對血糖影響較直接，建議避開或分食。"
+        }
+      },
+      burgerking: {
+        name: "👑 漢堡王 推薦點餐法",
+        recommend: [
+          "<strong>主餐方向</strong>：可選華堡/安格斯或雞肉漢堡，若想減少負擔可挑份量適中的品項，並減少多餘美乃滋或起司醬。",
+          "<strong>配餐／飲料方向</strong>：飲料選<strong>無糖綠茶、零卡可樂或美式咖啡</strong>；薯條可與他人分享或改選其他較清爽配餐。",
+          "<strong>吃法小技巧</strong>：漢堡內的生菜與番茄一起吃，放慢進食速度。"
+        ],
+        avoid: "雙層/三層高脂起司堡＋大薯＋含糖飲料。",
+        healthTip: {
+          both: "漢堡份量通常不小，建議單點或與家人分享，飲料選無糖。",
+          ldl: "控制起司、美乃滋與炸物份量，避免雙層高油組合。",
+          hba1c: "麵包與含糖飲料會拉高碳水總量，飲料請選無糖。"
+        }
+      },
+      pizzahut: {
+        name: "🍕 必勝客 推薦點餐法",
+        recommend: [
+          "<strong>餅皮與份量</strong>：建議選<strong>薄脆餅皮</strong>（比厚餅皮或起司捲心餅少澱粉與油脂），一次吃 **1～2 片**即可，搭配一份沙拉或蔬菜。",
+          "<strong>口味挑選</strong>：優先選蔬菜、海鮮或雞肉類口味，減少重乳酪與香腸培根堆疊。"
+        ],
+        avoid: "起司捲心餅/芝心餅皮、一次吃 4 片以上、搭配含糖飲料與大量烤炸副食。",
+        healthTip: {
+          both: "比薩容易不知不覺吃過量，選薄脆、限片數、加蔬菜是核心。",
+          ldl: "芝心/起司餅皮與加工肉腸油脂高，建議選薄脆與海鮮/蔬菜口味。",
+          hba1c: "比薩餅皮是精製澱粉，務必控制片數並搭配蔬菜。"
+        }
+      },
+      dominos: {
+        name: "🍕 達美樂 推薦點餐法",
+        recommend: [
+          "<strong>餅皮與份量</strong>：建議選<strong>薄脆餅皮</strong>，控制 **1～2 片**以內，並搭配生菜沙拉或蔬菜湯。",
+          "<strong>口味挑選</strong>：挑海鮮、菇菇或蔬菜類比薩，減少高脂肉腸與厚重起司。"
+        ],
+        avoid: "高油厚餅皮/起司餅皮過量、搭配含糖飲料與高熱量炸物拼盤。",
+        healthTip: {
+          both: "控制片數（1～2 片）與選擇無糖飲，能大幅降低這餐的負擔。",
+          ldl: "少選起司餅皮與肥肉/香腸類口味，多搭蔬菜。",
+          hba1c: "注意餅皮澱粉量，建議先吃蔬菜再吃比薩。"
+        }
+      }
+    };
+
+    function analyzeNoteText(noteText, health) {
+      const clean = (noteText || "").trim();
+      if (!clean) return null;
+
+      const tips = [];
+      const lower = clean.toLowerCase();
+
+      if (clean.includes("無糖") || clean.includes("綠茶") || clean.includes("紅茶") || clean.includes("黑咖啡") || clean.includes("水")) {
+        tips.push("您提到改搭配無糖飲或開水，這對穩定血糖與減少多餘熱量很有幫助。");
+      }
+      if (clean.includes("含糖") || clean.includes("可樂") || clean.includes("奶茶") || clean.includes("飲料") || clean.includes("甜")) {
+        tips.push("留意您提到的飲料或甜味：建議改為無糖飲或減糖，避免血糖快速波動。");
+      }
+      if (clean.includes("單點") || clean.includes("不配套餐") || clean.includes("一半") || clean.includes("半碗") || clean.includes("少吃") || clean.includes("只吃")) {
+        tips.push("您有提到控制份量或單點，這非常有助於避免澱粉與油脂一次攝取過多。");
+      }
+      if (clean.includes("不喝湯") || clean.includes("少喝湯") || clean.includes("湯喝一半")) {
+        tips.push("少喝湯可以減少隱藏的油脂與鈉含量，對血壓與血脂都很友善。");
+      }
+      if (clean.includes("青菜") || clean.includes("沙拉") || clean.includes("菜")) {
+        tips.push("有搭配青菜或沙拉很好，建議先吃菜再吃主食。");
+      }
+      if (clean.includes("炸") || clean.includes("薯條") || clean.includes("雞塊") || clean.includes("蛋撻")) {
+        tips.push("若包含炸物或酥皮點心，建議控制份量、去皮或與他人分食，尤其 LDL 偏高者更需留意。");
+      }
+
+      if (tips.length === 0) {
+        if (health === "ldl") {
+          tips.push(`已納入您的補充「${clean}」：建議留意其中是否含有油炸、肥肉或奶精/奶油，並搭配蔬菜。`);
+        } else if (health === "hba1c") {
+          tips.push(`已納入您的補充「${clean}」：建議留意其中澱粉與含糖量，並盡量先吃菜與蛋白質。`);
+        } else {
+          tips.push(`已納入您的補充「${clean}」：建議同時留意油脂與澱粉份量，搭配無糖飲與蔬菜。`);
+        }
+      }
+
+      return {
+        raw: clean,
+        tips
+      };
+    }
+
+    function renderRecommendation() {
+      const area = document.getElementById("recommendationArea");
+      const healthLabel =
+        state.health === "both"
+          ? "LDL ＋ HbA1c 雙高"
+          : state.health === "ldl"
+          ? "LDL 偏高"
+          : "HbA1c 偏高";
+
+      let html = "";
+
+      if (state.mode === "home") {
+        if (!state.staple && !state.protein && !state.veggie && !state.homeNote.trim()) {
+          html = `
+            <div class="result-box info">
+              <div class="result-title">目前狀態：${healthLabel}</div>
+              <p style="margin:0;">請點選上方的「主食」、「蛋白質／主菜」或「蔬菜」，或在下方輸入補充說明，系統就會立刻跳出建議。</p>
+            </div>
+          `;
+        } else {
+          const alerts = [];
+          let boxClass = "green";
+
+          if (state.staple === "sauce_rice" || state.staple === "fried_pastry") {
+            boxClass = "red";
+            alerts.push("主食屬於高油、勾芡或精緻澱粉類：建議減量（例如吃一半或分食），並避免把濃醬/湯汁全吃完。");
+          } else if (state.staple === "white_rice" || state.staple === "soup_noodle") {
+            if (boxClass !== "red") boxClass = "yellow";
+            alerts.push(
+              state.staple === "soup_noodle"
+                ? "湯麵類請留意湯頭油脂與鈉含量，建議少喝湯、先吃料與青菜。"
+                : "白飯/白麵建議控制約半碗～2/3 碗，並搭配蔬菜與蛋白質。"
+            );
+          } else if (state.staple === "none") {
+            alerts.push("今天不吃主食：請確保蛋白質與蔬菜份量足夠，若平時有吃降血糖藥或打胰島素，需留意是否容易低血糖。");
+          } else if (state.staple === "whole_grain" || state.staple === "root_veg") {
+            alerts.push("主食選擇不錯！仍建議控制份量（約 1 個拳頭或半碗～2/3 碗），避免因「健康」而吃過量。");
+          }
+
+          if (state.protein === "fatty_processed") {
+            boxClass = "red";
+            alerts.push("蛋白質含較多飽和脂肪或炸衣：建議去皮、挑瘦肉或減少份量，下餐可改選魚肉、豆腐或去皮雞肉。");
+          } else if (state.protein === "lean_pork_beef" || state.protein === "included") {
+            if (boxClass !== "red") boxClass = "yellow";
+            alerts.push(
+              state.protein === "included"
+                ? "肉類已含在主食中：請留意是否偏肥或有勾芡/重油醬汁，必要時可額外補一點青菜。"
+                : "瘦肉建議適量攝取並挑去肥油。"
+            );
+          } else if (state.protein === "fish_tofu" || state.protein === "lean_poultry_egg") {
+            alerts.push("蛋白質來源相當不錯，有助於增加飽足感與穩定血糖。");
+          }
+
+          if (state.veggie === "none") {
+            boxClass = "red";
+            alerts.push("目前幾乎沒有青菜：建議這餐補一份燙青菜或涼拌蔬菜，增加膳食纖維。");
+          } else if (state.veggie === "little") {
+            if (boxClass !== "red") boxClass = "yellow";
+            alerts.push("青菜偏少：若方便，建議多加一份蔬菜，有助延緩血糖上升與幫助排便/代謝。");
+          } else if (state.veggie === "lots") {
+            alerts.push("青菜份量充足，是很好的搭配！");
+          }
+
+          html += `
+            <div class="result-box ${boxClass}">
+              <div class="result-title">家常配餐建議（對象：${healthLabel}）</div>
+              <ul>${alerts.map((a) => `<li>${a}</li>`).join("")}</ul>
+            </div>
+          `;
+
+          const noteRes = analyzeNoteText(state.homeNote, state.health);
+          if (noteRes) {
+            html += `
+              <div class="result-box info">
+                <div class="result-title">補充說明回饋：「${escapeHtml(noteRes.raw)}」</div>
+                <ul>${noteRes.tips.map((t) => `<li>${t}</li>`).join("")}</ul>
+              </div>
+            `;
+          }
+
+          html += `
+            <div class="order-banner">
+              💡 建議進食順序：<strong>先吃蔬菜 → 再吃蛋/豆/魚/肉 → 最後吃澱粉</strong>（若血糖偏高或有服藥，請留意身體是否頭暈、冒冷汗）。
+            </div>
+          `;
+        }
+      } else if (state.mode === "eatingout") {
+        if (!state.eat && !state.eatNote.trim()) {
+          html = `
+            <div class="result-box info">
+              <div class="result-title">目前狀態：${healthLabel}</div>
+              <p style="margin:0;">請點選上方 9 種常見外食之一（如自助餐、滷肉飯、拉麵、火鍋、烤肉等），即可查看點餐與吃法建議。</p>
+            </div>
+          `;
+        } else {
+          if (state.eat) {
+            const item = eatingOutData[state.eat];
+            html += `
+              <div class="result-box yellow">
+                <div class="result-title">${item.name}（對象：${healthLabel}）</div>
+                <ul>
+                  <li><strong>怎麼點／怎麼挑：</strong>${item.pick}</li>
+                  <li><strong>建議避開：</strong>${item.avoid}</li>
+                  <li><strong>針對「${healthLabel}」提醒：</strong>${item.healthTip[state.health]}</li>
+                </ul>
+              </div>
+            `;
+          }
+
+          const noteRes = analyzeNoteText(state.eatNote, state.health);
+          if (noteRes) {
+            html += `
+              <div class="result-box info">
+                <div class="result-title">外食補充回饋：「${escapeHtml(noteRes.raw)}」</div>
+                <ul>${noteRes.tips.map((t) => `<li>${t}</li>`).join("")}</ul>
+              </div>
+            `;
+          }
+
+          html += `
+            <div class="order-banner">
+              💡 外食通用小提醒：<strong>不喝含糖飲、醬汁另外放或減量、先吃菜再吃飯/麵</strong>。
+            </div>
+          `;
+        }
+      } else if (state.mode === "fastfood") {
+        if (!state.ff && !state.ffNote.trim()) {
+          html = `
+            <div class="result-box info">
+              <div class="result-title">目前狀態：${healthLabel}</div>
+              <p style="margin:0;">請點選上方的速食品牌（例如「麥當勞」或「SUBWAY」），系統會顯示推薦點餐組合；您也可以在下方輸入「單點、改無糖綠茶、只吃一塊炸雞」等補充，會即時產生提醒。</p>
+            </div>
+          `;
+        } else {
+          if (state.ff) {
+            const ff = fastFoodData[state.ff];
+            html += `
+              <div class="result-box green">
+                <div class="result-title">${ff.name}（對象：${healthLabel}）</div>
+                <ul>
+                  ${ff.recommend.map((r) => `<li>${r}</li>`).join("")}
+                  <li><strong>較需避開：</strong>${ff.avoid}</li>
+                  <li><strong>針對「${healthLabel}」重點：</strong>${ff.healthTip[state.health]}</li>
+                </ul>
+              </div>
+            `;
+          }
+
+          const noteRes = analyzeNoteText(state.ffNote, state.health);
+          if (noteRes) {
+            html += `
+              <div class="result-box info">
+                <div class="result-title">速食點餐補充回饋：「${escapeHtml(noteRes.raw)}」</div>
+                <ul>${noteRes.tips.map((t) => `<li>${t}</li>`).join("")}</ul>
+              </div>
+            `;
+          }
+
+          html += `
+            <div class="order-banner">
+              💡 速食點餐口訣：<strong>主餐挑清爽或減量、飲料選無糖、炸物與甜點不整套全包</strong>。
+            </div>
+          `;
+        }
+      }
+
+      area.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // 綁定健康狀態按鈕
+    document.querySelectorAll("#healthGroup .choice-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#healthGroup .choice-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.health = btn.dataset.health;
+        renderRecommendation();
+      });
+    });
+
+    // 綁定模式切換
+    document.querySelectorAll(".mode-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".mode-tab").forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+        state.mode = tab.dataset.mode;
+
+        document.getElementById("mode-home").classList.toggle("hidden", state.mode !== "home");
+        document.getElementById("mode-eatingout").classList.toggle("hidden", state.mode !== "eatingout");
+        document.getElementById("mode-fastfood").classList.toggle("hidden", state.mode !== "fastfood");
+
+        renderRecommendation();
+      });
+    });
+
+    // 綁定家常選項
+    function bindSingleSelectGroup(selector, key) {
+      document.querySelectorAll(`${selector} .choice-btn`).forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const already = btn.classList.contains("active");
+          document.querySelectorAll(`${selector} .choice-btn`).forEach((b) => b.classList.remove("active"));
+          if (!already) {
+            btn.classList.add("active");
+            state[key] = btn.dataset[key];
+          } else {
+            state[key] = null;
+          }
+          renderRecommendation();
+        });
+      });
+    }
+
+    bindSingleSelectGroup("#stapleGroup", "staple");
+    bindSingleSelectGroup("#proteinGroup", "protein");
+    bindSingleSelectGroup("#veggieGroup", "veggie");
+    bindSingleSelectGroup("#eatingOutGroup", "eat");
+    bindSingleSelectGroup("#fastFoodGroup", "ff");
+
+    // 綁定即時文字輸入
+    document.getElementById("homeNoteInput").addEventListener("input", (e) => {
+      state.homeNote = e.target.value;
+      renderRecommendation();
+    });
+
+    document.getElementById("eatNoteInput").addEventListener("input", (e) => {
+      state.eatNote = e.target.value;
+      renderRecommendation();
+    });
+
+    document.getElementById("ffNoteInput").addEventListener("input", (e) => {
+      state.ffNote = e.target.value;
+      renderRecommendation();
+    });
+
+    // 清除按鈕
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      state.staple = null;
+      state.protein = null;
+      state.veggie = null;
+      state.homeNote = "";
+      state.eat = null;
+      state.eatNote = "";
+      state.ff = null;
+      state.ffNote = "";
+
+      document.querySelectorAll("#stapleGroup .choice-btn, #proteinGroup .choice-btn, #veggieGroup .choice-btn, #eatingOutGroup .choice-btn, #fastFoodGroup .choice-btn")
+        .forEach((b) => b.classList.remove("active"));
+
+      document.getElementById("homeNoteInput").value = "";
+      document.getElementById("eatNoteInput").value = "";
+      document.getElementById("ffNoteInput").value = "";
+
+      renderRecommendation();
+    });
+
+    // 初始渲染
+    renderRecommendation();
+  </script>
+</body>
+</html>
