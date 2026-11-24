@@ -336,7 +336,7 @@
             </button>
             <button class="choice-btn" data-staple="white_rice" type="button">
               🟡 白飯／白麵／饅頭
-              <span class="sub-label">常見主食，建議控制半碗～2/3碗</span>
+              <span class="sub-label">日常主食，控制約半碗～2/3碗即可</span>
             </button>
             <button class="choice-btn" data-staple="soup_noodle" type="button">
               🟡 湯麵類（牛肉麵、陽春麵）
@@ -365,21 +365,33 @@
               🟡 已含在主食中
               <span class="sub-label">如牛肉麵、咖哩飯、燴飯內含的肉</span>
             </button>
-            <button class="choice-btn" data-protein="fish_tofu" type="button">
-              🟢 魚肉／海鮮／豆腐／豆干
-              <span class="sub-label">低飽和脂肪或植物性蛋白</span>
-            </button>
             <button class="choice-btn" data-protein="lean_poultry_egg" type="button">
               🟢 去皮雞肉／雞蛋／無糖豆漿
-              <span class="sub-label">優質蛋白質來源</span>
+              <span class="sub-label">低脂優質蛋白，容易掌控</span>
+            </button>
+            <button class="choice-btn" data-protein="fish_tofu" type="button">
+              🟢 魚肉／豆腐／豆干
+              <span class="sub-label">魚類或豆製品，相對清爽</span>
+            </button>
+            <button class="choice-btn" data-protein="shrimp_squid" type="button">
+              🟢 蝦／魷魚／花枝（水煮/蒸/烤）
+              <span class="sub-label">低脂海鮮，避免重油炸或濃醬沾料</span>
+            </button>
+            <button class="choice-btn" data-protein="skin_on_poultry" type="button">
+              🟡 帶皮雞肉（白斬雞/烤雞腿）
+              <span class="sub-label">雞皮含部分油脂，建議適量或去一部分皮</span>
             </button>
             <button class="choice-btn" data-protein="lean_pork_beef" type="button">
-              🟡 瘦豬肉／瘦牛肉
-              <span class="sub-label">適量食用，挑去肥油</span>
+              🟡 瘦豬肉／牛肉／牛排（挑瘦）
+              <span class="sub-label">挑去肥油、控制份量與醬汁</span>
+            </button>
+            <button class="choice-btn" data-protein="duck_lamb" type="button">
+              🟡 鴨肉／羊肉（去皮/少油）
+              <span class="sub-label">留意鴨皮/肥羊油脂與湯醬</span>
             </button>
             <button class="choice-btn" data-protein="fatty_processed" type="button">
               🔴 五花肉／培根／香腸／炸物
-              <span class="sub-label">飽和脂肪或炸衣油脂高</span>
+              <span class="sub-label">高飽和脂肪或炸衣油脂高，需警惕</span>
             </button>
           </div>
         </div>
@@ -685,14 +697,14 @@
       kfc: {
         name: "🍗 肯德基 推薦點餐法",
         recommend: [
-          "<strong>主餐方向</strong>：若想吃炸雞，建議<strong>控制在 1～2 塊以內</strong>，吃之前可先將部分炸雞皮剝除，或選烤類/捲類餐點。",
+          "<strong>主餐方向</strong>：若想吃炸雞，建議控制在 1～2 塊以內，吃之前可去一部分外皮，或與家人分享。",
           "<strong>配餐／飲料方向</strong>：飲料選<strong>無糖綠茶或無糖紅茶</strong>；配餐可挑玉米濃湯（適量）或沙拉。",
           "<strong>吃法小技巧</strong>：不要把整份炸雞＋蛋撻＋含糖飲料一次全包。"
         ],
         avoid: "炸雞吃多塊＋蛋撻＋含糖汽水組合。",
         healthTip: {
-          both: "炸雞皮油脂高、蛋撻有酥油與糖分，建議炸雞限量、蛋撻先放一邊或分食，飲料選無糖。",
-          ldl: "炸雞皮與酥皮蛋撻飽和脂肪高，去皮與減量很重要。",
+          both: "炸雞外皮與蛋撻油脂較高，建議炸雞限量/去一部分皮、蛋撻適量分食，飲料選無糖。",
+          ldl: "炸雞皮與酥皮蛋撻飽和脂肪較高，適當減量與去部分皮很重要。",
           hba1c: "蛋撻與含糖飲料對血糖影響較直接，建議避開或分食。"
         }
       },
@@ -764,7 +776,7 @@
         tips.push("有搭配青菜或沙拉很好，建議先吃菜再吃主食。");
       }
       if (clean.includes("炸") || clean.includes("薯條") || clean.includes("雞塊") || clean.includes("蛋撻")) {
-        tips.push("若包含炸物或酥皮點心，建議控制份量、去皮或與他人分食，尤其 LDL 偏高者更需留意。");
+        tips.push("若包含炸物或酥皮點心，建議控制份量、去一部分皮或與他人分食，尤其 LDL 偏高者更需留意。");
       }
 
       if (tips.length === 0) {
@@ -815,7 +827,7 @@
             alerts.push(
               state.staple === "soup_noodle"
                 ? "湯麵類請留意湯頭油脂與鈉含量，建議少喝湯、先吃料與青菜。"
-                : "白飯/白麵建議控制約半碗～2/3 碗，並搭配蔬菜與蛋白質。"
+                : "白飯/白麵是安心日常主食，控制在半碗～2/3 碗並搭配蔬菜與蛋白質即可健康享用。"
             );
           } else if (state.staple === "none") {
             alerts.push("今天不吃主食：請確保蛋白質與蔬菜份量足夠，若平時有吃降血糖藥或打胰島素，需留意是否容易低血糖。");
@@ -825,16 +837,33 @@
 
           if (state.protein === "fatty_processed") {
             boxClass = "red";
-            alerts.push("蛋白質含較多飽和脂肪或炸衣：建議去皮、挑瘦肉或減少份量，下餐可改選魚肉、豆腐或去皮雞肉。");
-          } else if (state.protein === "lean_pork_beef" || state.protein === "included") {
+            alerts.push("蛋白質含較多飽和脂肪、肥肉或炸衣：建議去皮、挑瘦肉或減少份量，下餐可改選魚肉、海鮮、豆腐或去皮雞肉。");
+          } else if (
+            state.protein === "skin_on_poultry" ||
+            state.protein === "lean_pork_beef" ||
+            state.protein === "duck_lamb" ||
+            state.protein === "included"
+          ) {
             if (boxClass !== "red") boxClass = "yellow";
-            alerts.push(
-              state.protein === "included"
-                ? "肉類已含在主食中：請留意是否偏肥或有勾芡/重油醬汁，必要時可額外補一點青菜。"
-                : "瘦肉建議適量攝取並挑去肥油。"
-            );
-          } else if (state.protein === "fish_tofu" || state.protein === "lean_poultry_egg") {
-            alerts.push("蛋白質來源相當不錯，有助於增加飽足感與穩定血糖。");
+            if (state.protein === "skin_on_poultry") {
+              alerts.push("帶皮雞肉（如白斬雞、烤雞腿）：雞肉本身優質，皮含有適量油脂，吃的時候去一部分皮或適量享用即可。");
+            } else if (state.protein === "included") {
+              alerts.push("肉類已含在主食中：請留意是否偏肥或有勾芡/重油醬汁，必要時可額外補一點青菜。");
+            } else if (state.protein === "duck_lamb") {
+              alerts.push("鴨肉或羊肉建議挑瘦的部位、去皮並留意湯頭或醬料油脂，份量適中即可。");
+            } else {
+              alerts.push("瘦豬肉、牛肉或牛排建議挑去肥油、控制份量，並避免過多濃重醬汁。");
+            }
+          } else if (
+            state.protein === "fish_tofu" ||
+            state.protein === "lean_poultry_egg" ||
+            state.protein === "shrimp_squid"
+          ) {
+            if (state.protein === "shrimp_squid") {
+              alerts.push("蝦、魷魚或花枝屬於低脂清爽海鮮，建議水煮/蒸/烤；若是油炸或重油濃醬沾料，仍需注意油脂控制。");
+            } else {
+              alerts.push("蛋白質來源相當不錯，有助於增加飽足感與穩定血糖。");
+            }
           }
 
           if (state.veggie === "none") {
