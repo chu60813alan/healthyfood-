@@ -881,6 +881,11 @@
         return { cls: "green", label: "🟢 整體清爽好掌控" };
       }
 
+      // 綠、綠、黃且黃燈在蔬菜（只有一點青菜）：一律改為綠燈
+      if (sLight === "green" && pLight === "green" && vLight === "yellow") {
+        return { cls: "green", label: "🟢 整體底子不錯（這餐青菜偏少，順便補一點或下餐多吃菜即可）" };
+      }
+
       // 兩綠＋一黃：若黃燈不是「湯麵類」或「帶皮雞肉／鴨肉／羊肉」，整體底子穩，給綠燈並溫和提醒即可
       const heavyYellow =
         state.staple === "soup_noodle" ||
