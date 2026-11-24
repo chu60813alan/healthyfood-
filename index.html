@@ -881,9 +881,14 @@
         return { cls: "green", label: "🟢 整體清爽好掌控" };
       }
 
-      // 白飯/白麵/饅頭搭配兩項綠燈：日常主食配清爽菜與蛋白，給綠燈並提醒份量即可
-      if (redCount === 0 && yellowCount === 1 && greenCount === 2 && state.staple === "white_rice") {
-        return { cls: "green", label: "🟢 整體搭配相當均衡（白飯控制半碗～2/3碗即可）" };
+      // 兩綠＋一黃：若黃燈不是「湯麵類」或「帶皮雞肉／鴨肉／羊肉」，整體底子穩，給綠燈並溫和提醒即可
+      const heavyYellow =
+        state.staple === "soup_noodle" ||
+        state.protein === "skin_on_poultry" ||
+        state.protein === "duck_lamb";
+
+      if (redCount === 0 && yellowCount === 1 && greenCount === 2 && !heavyYellow) {
+        return { cls: "green", label: "🟢 整體搭配相當均衡（視情況補一點青菜或控制份量即可）" };
       }
 
       // 兩綠一紅且紅燈在蔬菜（幾乎沒有青菜）：主餐與蛋白底子好，給綠燈並溫和提醒補菜即可
@@ -892,7 +897,7 @@
       }
 
       if (redCount === 0) {
-        return { cls: "yellow", label: "🟡 整體尚可，留意份量與做法" };
+        return { cls: "yellow", label: "🟡 整體尚可，留意部位/湯頭與份量" };
       }
 
       // 其餘一紅兩綠（紅燈在主食或蛋白質）：維持黃燈提醒針對該項微調
