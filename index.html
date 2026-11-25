@@ -131,14 +131,14 @@
 
     .mode-tabs {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       margin-bottom: 18px;
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 768px) {
       .mode-tabs {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
@@ -347,13 +347,57 @@
     <section class="card">
       <h2 class="card-title">2. 選擇這餐的用餐情境</h2>
       <div class="mode-tabs">
-        <button class="mode-tab active" data-mode="home" type="button">🏠 家常／一般配餐</button>
+        <button class="mode-tab active" data-mode="breakfast" type="button">🥪 早餐專區</button>
+        <button class="mode-tab" data-mode="home" type="button">🏠 家常／一般配餐</button>
         <button class="mode-tab" data-mode="eatingout" type="button">🍜 常見外食（10種）</button>
         <button class="mode-tab" data-mode="fastfood" type="button">🍔 連鎖速食專區</button>
       </div>
 
+      <!-- 模式 D：早餐專區 -->
+      <div id="mode-breakfast">
+        <p class="hint">點選您今天的早餐類型，查看實用的避坑與優選建議：</p>
+        <div class="option-grid" id="breakfastGroup">
+          <button class="choice-btn" data-bf="traditional" type="button">
+            🟡 中式早餐店
+            <span class="sub-label">蛋餅、蘿蔔糕、飯糰</span>
+          </button>
+          <button class="choice-btn" data-bf="shao_bing" type="button">
+            🔴 燒餅油條店
+            <span class="sub-label">燒餅、油條、鹹豆漿</span>
+          </button>
+          <button class="choice-btn" data-bf="western" type="button">
+            🟡 西式早餐店
+            <span class="sub-label">三明治、漢堡、吐司</span>
+          </button>
+          <button class="choice-btn" data-bf="convenience" type="button">
+            🟢 超商早餐組合
+            <span class="sub-label">地瓜/飯糰＋豆漿/黑咖啡</span>
+          </button>
+          <button class="choice-btn" data-bf="light_yogurt" type="button">
+            🟢 輕食／優格／沙拉
+            <span class="sub-label">無糖優格、雞肉沙拉、水果</span>
+          </button>
+          <button class="choice-btn" data-bf="oats" type="button">
+            🟢 燕麥／穀片類
+            <span class="sub-label">大燕麥片、無糖豆漿/鮮奶</span>
+          </button>
+          <button class="choice-btn" data-bf="brunch" type="button">
+            🔴 早午餐店（Brunch）
+            <span class="sub-label">大拼盤、歐姆蛋、法式吐司</span>
+          </button>
+          <button class="choice-btn" data-bf="noodle_porridge" type="button">
+            🟡 傳統麵攤／粥品
+            <span class="sub-label">鹹粥、切仔麵、肉燥麵</span>
+          </button>
+        </div>
+        <div class="section-block">
+          <label for="bfNoteInput" class="block-heading">早餐補充說明（選填，輸入完成按 Enter 或離開此框後產生建議）</label>
+          <input type="text" id="bfNoteInput" placeholder="例如：改喝無糖豆漿、蛋餅不加醬、只吃半個飯糰..." />
+        </div>
+      </div>
+
       <!-- 模式 A：家常／一般配餐 -->
-      <div id="mode-home">
+      <div id="mode-home" class="hidden">
         <div class="section-block">
           <h3 class="block-heading">主食（澱粉）</h3>
           <div class="option-grid" id="stapleGroup">
@@ -554,7 +598,7 @@
   <script>
     const state = {
       health: "both",
-      mode: "home",
+      mode: "breakfast",
       staple: null,
       protein: null,
       veggie: null,
@@ -564,7 +608,9 @@
       eat: null,
       eatNote: "",
       ff: null,
-      ffNote: ""
+      ffNote: "",
+      bf: null,
+      bfNote: ""
     };
 
     const stapleLight = {
@@ -592,6 +638,105 @@
       lots: "green",
       little: "yellow",
       none: "red"
+    };
+
+    const breakfastData = {
+      traditional: {
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（精緻澱粉與醬汁偏多，挑對品項即可）",
+        name: "中式早餐店（蛋餅、蘿蔔糕、飯糰）",
+        pick: "優先點「原味蛋餅、蔬菜蛋餅、起司蛋餅」或「水煮蛋／茶葉蛋」，搭配無糖豆漿；醬油膏或甜辣醬少蘸一點。",
+        avoid: "紫米/白米飯糰包油條、煎得過油的蘿蔔糕加蛋、培根蛋餅，以及含糖豆漿或含糖奶茶。",
+        healthTip: {
+          both: "中式早餐極易「澱粉＋糖分」爆表。建議：蛋餅醬另外放＋改無糖豆漿。",
+          ldl: "避開油條、培根與過多的煎油，蛋餅或饅頭夾蛋相對低脂安全。",
+          hba1c: "飯糰與蘿蔔糕升糖較快，建議優先選蛋餅加蛋，搭配無糖豆漿延緩血糖上升。"
+        }
+      },
+      shao_bing: {
+        traffic: "red",
+        trafficText: "🔴 紅燈（飽和脂肪與熱量雙高，需特別警惕）",
+        name: "中式燒餅油條店",
+        pick: "若想吃燒餅，建議選「燒餅夾蛋」或「燒餅夾生菜」，不加油條；飲料選無糖豆漿或鹹豆漿（少香油）。",
+        avoid: "燒餅包油條、炸油條雙份、甜豆漿與加大量香油辣油的鹹豆漿。",
+        healthTip: {
+          both: "燒餅製作過程揉入大量油脂，油條又是高溫重油炸，雙高族群建議避開「燒餅＋油條」組合。",
+          ldl: "酥皮燒餅與油條的飽和脂肪與反式脂肪風險較高，LDL 偏高者宜少吃。",
+          hba1c: "麵粉酥餅＋油條吸收快，容易引起餐後血糖急升，建議換成蒸饅頭夾蛋或蛋餅。"
+        }
+      },
+      western: {
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（注意美乃滋、加工肉與飲料）",
+        name: "西式早餐店（三明治、漢堡、吐司）",
+        pick: "選「蔬菜蛋吐司、烤雞腿堡、鮪魚吐司（少美乃滋）」，請店家「不抹美乃滋／奶油」，飲料改選無糖綠茶、黑咖啡或無糖豆漿。",
+        avoid: "培根/火腿/卡啦雞腿堡、厚片土司（奶酥/花生/巧克力）、冰奶茶或含糖紅茶。",
+        healthTip: {
+          both: "西式早餐兩大隱形殺手是「美乃滋」與「大杯含糖奶茶」，去美乃滋＋無糖飲能大幅降負擔。",
+          ldl: "抹醬（美乃滋/奶油）與培根香腸高脂，改選煎蛋與烤雞肉更安心。",
+          hba1c: "吐司與果醬澱粉高，建議搭配夾蛋與蔬菜，並絕對避開含糖奶茶。"
+        }
+      },
+      convenience: {
+        traffic: "green",
+        trafficText: "🟢 綠燈（成分標示清楚，最好掌控的優質選擇）",
+        name: "超商早餐組合",
+        pick: "推薦組合：<strong>蒸地瓜／雞肉飯糰／全麥三明治 ＋ 無糖高纖豆漿／黑咖啡／茶葉蛋 2 顆</strong>。",
+        avoid: "熱狗堡、肉鬆飯糰過量、夾心麵包/熱狗/洋芋片，以及含糖拿鐵/含糖奶茶。",
+        healthTip: {
+          both: "超商是控血糖與血脂的神隊友！直奔「地瓜/茶葉蛋/無糖豆漿」區最穩作法。",
+          ldl: "成分標示明確，優先挑選脂質低於 10g 的飯糰或地瓜搭配豆漿。",
+          hba1c: "天然根莖澱粉（地瓜）搭配蛋白（豆漿/蛋），能保持極佳的餐後血糖平穩。"
+        }
+      },
+      light_yogurt: {
+        traffic: "green",
+        trafficText: "🟢 綠燈（清爽高纖，非常適合健康維持）",
+        name: "輕食／優格／沙拉",
+        pick: "選<strong>無糖優格／希臘優格</strong>，搭配一小把堅果或適量低GI水果（芭樂、蘋果、奇異果），或搭配雞胸肉沙拉（醬料選和風醬/油醋醬少許）。",
+        avoid: "加滿果醬/黑糖的含糖優格、千島醬/凱薩醬加爆，以及含糖水果乾粒。",
+        healthTip: {
+          both: "極佳的高纖清爽組合，注意「優格選無糖、沙拉醬少加」即可。",
+          ldl: "高纖蔬菜與優格有益腸道代謝，堅果提供優質不飽和脂肪，對血脂大有幫助。",
+          hba1c: "優格務必確認無添加糖，水果適量即可，避免血糖起伏。"
+        }
+      },
+      oats: {
+        traffic: "green",
+        trafficText: "🟢 綠燈（富含 β-聚葡萄糖，降膽固醇與控糖好幫手）",
+        name: "燕麥／穀片類",
+        pick: "選<strong>大燕麥片／原味沖泡燕麥</strong>，加入無糖豆漿、低脂鮮奶或水，可加一顆水煮蛋增添蛋白質。",
+        avoid: "三合一甜燕麥包、含糖調味穀物片（Cereal）、加很多煉乳或糖漿。",
+        healthTip: {
+          both: "原型燕麥富含水溶性膳食纖維，是壞膽固醇與血糖雙高的黃金食材。",
+          ldl: "燕麥中的膳食纖維有助吸附腸道膽固醇，非常推薦定期食用。",
+          hba1c: "請選需沖泡的原型大燕麥片而非即溶甜燕麥，搭配蛋白質效果更好。"
+        }
+      },
+      brunch: {
+        traffic: "red",
+        trafficText: "🔴 紅燈（熱量、油脂與精緻澱粉集中，需特別警惕）",
+        name: "早午餐店（Brunch 拼盤）",
+        pick: "挑選含有「生菜沙拉、水煮/嫩煎雞胸肉、炒蛋/水波蛋」的拼盤；麵包選全麥或麵包吃一半；飲料選無糖茶或黑咖啡。",
+        avoid: "法式吐司淋糖漿、培根香腸大拼盤、薯餅薯條、濃湯與含糖果汁/奶茶。",
+        healthTip: {
+          both: "早午餐拼盤經常隱藏大量奶油、糖漿與加工肉，建議與朋友分食或挑選原形食材為主的品項。",
+          ldl: "炸薯餅、煎培根與淋滿奶油的吐司飽和脂肪極高，建議換成沙拉與煎蛋。",
+          hba1c: "法式吐司與鬆餅糖分很高，建議先吃沙拉與蛋肉，甜澱粉只吃幾口嚐味。"
+        }
+      },
+      noodle_porridge: {
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（澱粉偏高，需注意蔬菜與蛋白質補充）",
+        name: "傳統麵攤／鹹粥",
+        pick: "若吃乾麵或粥，建議搭配「燙青菜」與「滷蛋／豆干／嘴邊肉（瘦）」，湯麵盡量少喝湯。",
+        avoid: "加一大匙油蔥豬油、高油肉燥乾麵、炸肉紅燒肉、酸菜肚片重鹹湯。",
+        healthTip: {
+          both: "傳統台式早餐澱粉比例偏高，務必加點一盤燙青菜與滷蛋來平衡。",
+          ldl: "避開紅燒肉、三層肉與淋在麵上的大量豬油/油蔥。",
+          hba1c: "白粥與乾麵升糖快，請勿單吃一碗麵，一定要配青菜與豆干/蛋。"
+        }
+      }
     };
 
     const eatingOutData = {
@@ -676,7 +821,7 @@
         healthTip: {
           both: "拉麵最大的隱藏負擔在「湯頭油脂與鈉」以及「麵量」，少喝湯、多留半碗湯最關鍵。",
           ldl: "豚骨背脂湯頭飽和脂肪高，建議選較清爽湯底且少喝湯。",
-          hba1c: "拉麵是精緻澱粉，建議先吃配菜/蛋/肉，麵量適中且不配飯類。"
+          hba1c: "拉麵是精製澱粉，建議先吃配菜/蛋/肉，麵量適中且不配飯類。"
         }
       },
       hotpot: {
@@ -924,7 +1069,46 @@
 
       let html = "";
 
-      if (state.mode === "home") {
+      if (state.mode === "breakfast") {
+        const noteRes = analyzeNoteText(state.bfNote, state.health);
+        if (!state.bf && !noteRes) {
+          html = `
+            <div class="result-box info">
+              <div class="result-title">目前狀態：${healthLabel}</div>
+              <p style="margin:0;">請點選上方 8 種常見早餐情境之一，即可查看專屬點餐與吃法建議。</p>
+            </div>
+          `;
+        } else {
+          if (state.bf) {
+            const bf = breakfastData[state.bf];
+            html += `
+              <div class="result-box ${bf.traffic}">
+                <div class="result-title">${bf.name}・${bf.trafficText}（對象：${healthLabel}）</div>
+                <ul>
+                  <li><strong>怎麼點／怎麼挑：</strong>${bf.pick}</li>
+                  <li><strong>建議避開：</strong>${bf.avoid}</li>
+                  <li><strong>針對「${healthLabel}」提醒：</strong>${bf.healthTip[state.health]}</li>
+                </ul>
+              </div>
+            `;
+          }
+
+          if (noteRes) {
+            html += `
+              <div class="result-box info">
+                <div class="result-title">早餐補充回饋：「${escapeHtml(noteRes.raw)}」</div>
+                <ul>${noteRes.tips.map((t) => `<li>${t}</li>`).join("")}</ul>
+              </div>
+            `;
+          }
+
+          html += `
+            <div class="order-banner">
+              💡 早餐黃金口訣：<strong>飲料一律選無糖、抹醬少加、優先補充蛋白質（蛋/豆漿）延緩血糖起伏</strong>。
+            </div>
+          `;
+        }
+      } else if (state.mode === "home") {
         const noteRes = analyzeNoteText(state.homeNote, state.health);
 
         if (!state.homeSubmitted) {
@@ -1137,6 +1321,7 @@
         tab.classList.add("active");
         state.mode = tab.dataset.mode;
 
+        document.getElementById("mode-breakfast").classList.toggle("hidden", state.mode !== "breakfast");
         document.getElementById("mode-home").classList.toggle("hidden", state.mode !== "home");
         document.getElementById("mode-eatingout").classList.toggle("hidden", state.mode !== "eatingout");
         document.getElementById("mode-fastfood").classList.toggle("hidden", state.mode !== "fastfood");
@@ -1169,6 +1354,7 @@
       updateHomeProgressText();
     }
 
+    bindSingleSelectGroup("#breakfastGroup", "bf");
     bindSingleSelectGroup("#stapleGroup", "staple", onHomeSelectionChanged);
     bindSingleSelectGroup("#proteinGroup", "protein", onHomeSelectionChanged);
     bindSingleSelectGroup("#veggieGroup", "veggie", onHomeSelectionChanged);
@@ -1217,6 +1403,7 @@
       });
     }
 
+    bindNoteInput("bfNoteInput", "bfNote");
     bindNoteInput("homeNoteInput", "homeNote");
     bindNoteInput("eatNoteInput", "eatNote");
     bindNoteInput("ffNoteInput", "ffNote");
@@ -1233,10 +1420,13 @@
       state.eatNote = "";
       state.ff = null;
       state.ffNote = "";
+      state.bf = null;
+      state.bfNote = "";
 
-      document.querySelectorAll("#stapleGroup .choice-btn, #proteinGroup .choice-btn, #veggieGroup .choice-btn, #eatingOutGroup .choice-btn, #fastFoodGroup .choice-btn")
+      document.querySelectorAll("#breakfastGroup .choice-btn, #stapleGroup .choice-btn, #proteinGroup .choice-btn, #veggieGroup .choice-btn, #eatingOutGroup .choice-btn, #fastFoodGroup .choice-btn")
         .forEach((b) => b.classList.remove("active"));
 
+      document.getElementById("bfNoteInput").value = "";
       document.getElementById("homeNoteInput").value = "";
       document.getElementById("eatNoteInput").value = "";
       document.getElementById("ffNoteInput").value = "";
