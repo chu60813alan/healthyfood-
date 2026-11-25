@@ -91,7 +91,7 @@
 
     .option-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
       gap: 12px;
     }
 
@@ -178,7 +178,8 @@
       margin: 0 0 10px;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    textarea {
       width: 100%;
       padding: 13px 15px;
       font-size: 17px;
@@ -187,10 +188,18 @@
       outline: none;
       color: var(--text);
       background: #fff;
+      font-family: inherit;
     }
 
-    input[type="text"]:focus {
+    input[type="text"]:focus,
+    textarea:focus {
       border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.5;
     }
 
     .submit-row {
@@ -202,20 +211,34 @@
       gap: 12px;
     }
 
+    .submit-btn,
+    .secondary-btn {
+      border-radius: 12px;
+      padding: 13px 20px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
     .submit-btn {
       background: var(--primary);
       color: #fff;
       border: none;
-      border-radius: 12px;
-      padding: 14px 24px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s ease;
     }
 
     .submit-btn:hover {
       background: #145382;
+    }
+
+    .secondary-btn {
+      background: #fff;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .secondary-btn:hover {
+      background: var(--primary-soft);
     }
 
     .status-text {
@@ -308,6 +331,36 @@
       margin-bottom: 10px;
     }
 
+    .feedback-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .feedback-preview {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      font-size: 15px;
+      white-space: pre-wrap;
+      color: var(--text);
+    }
+
+    .feedback-status {
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .disclaimer {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
     .hidden {
       display: none;
     }
@@ -355,39 +408,35 @@
 
       <!-- 模式 D：早餐專區 -->
       <div id="mode-breakfast">
-        <p class="hint">點選您今天的早餐類型，查看實用的避坑與優選建議：</p>
+        <p class="hint">依早餐品項與做法分流，不以店名一竿子打翻：挑對清爽品項也能是綠燈，高油或加工品多的組合則清楚提醒。</p>
         <div class="option-grid" id="breakfastGroup">
-          <button class="choice-btn" data-bf="traditional" type="button">
-            🟡 中式早餐店
-            <span class="sub-label">蛋餅、蘿蔔糕、飯糰</span>
+          <button class="choice-btn" data-bf="egg_pancake_light" type="button">
+            🟢 清爽蛋餅類
+            <span class="sub-label">原味、蔬菜蛋、起司少醬</span>
           </button>
-          <button class="choice-btn" data-bf="shao_bing" type="button">
-            🔴 燒餅油條店
-            <span class="sub-label">燒餅、油條、鹹豆漿</span>
+          <button class="choice-btn" data-bf="egg_pancake_heavy" type="button">
+            🔴 較油／加工蛋餅類
+            <span class="sub-label">火腿、培根、薯餅、重醬</span>
           </button>
-          <button class="choice-btn" data-bf="western" type="button">
-            🟡 西式早餐店
-            <span class="sub-label">三明治、漢堡、吐司</span>
+          <button class="choice-btn" data-bf="toast_sandwich_light" type="button">
+            🟢 清爽吐司／三明治
+            <span class="sub-label">蔬菜蛋、烤/嫩煎雞肉、鮪魚少醬</span>
           </button>
-          <button class="choice-btn" data-bf="convenience" type="button">
-            🟢 超商早餐組合
-            <span class="sub-label">地瓜/飯糰＋豆漿/黑咖啡</span>
+          <button class="choice-btn" data-bf="toast_sandwich_heavy" type="button">
+            🔴 高負擔三明治／厚片
+            <span class="sub-label">卡啦雞腿、培根/熱狗、奶酥/花生厚片</span>
           </button>
-          <button class="choice-btn" data-bf="light_yogurt" type="button">
-            🟢 輕食／優格／沙拉
-            <span class="sub-label">無糖優格、雞肉沙拉、水果</span>
+          <button class="choice-btn" data-bf="convenience_light" type="button">
+            🟢 超商／居家清爽組合
+            <span class="sub-label">地瓜、茶葉蛋、無糖豆漿、燕麥、無糖優格</span>
           </button>
-          <button class="choice-btn" data-bf="oats" type="button">
-            🟢 燕麥／穀片類
-            <span class="sub-label">大燕麥片、無糖豆漿/鮮奶</span>
+          <button class="choice-btn" data-bf="rice_radish_porridge" type="button">
+            🟡 飯糰／蘿蔔糕／麵粥類
+            <span class="sub-label">留意米飯/澱粉份量、肥肉或勾芡</span>
           </button>
-          <button class="choice-btn" data-bf="brunch" type="button">
-            🔴 早午餐店（Brunch）
-            <span class="sub-label">大拼盤、歐姆蛋、法式吐司</span>
-          </button>
-          <button class="choice-btn" data-bf="noodle_porridge" type="button">
-            🟡 傳統麵攤／粥品
-            <span class="sub-label">鹹粥、切仔麵、肉燥麵</span>
+          <button class="choice-btn" data-bf="fried_pastry" type="button">
+            🔴 燒餅油條／酥炸類
+            <span class="sub-label">燒餅油條、油條、炸雞塊/薯餅</span>
           </button>
         </div>
         <div class="section-block">
@@ -593,6 +642,29 @@
       <h2 class="card-title">3. 您的飯前飲食與點餐建議</h2>
       <div id="recommendationArea"></div>
     </section>
+
+    <!-- 4. 回饋草稿與複製區（先不接 LIFF，方便測試） -->
+    <section class="card" id="feedbackCard">
+      <h2 class="card-title">4. 意見回饋草稿</h2>
+      <p class="hint">
+        測試時如果想到想補的品項或覺得哪裡怪怪的，可以先寫在這裡，系統會自動帶出目前選擇，按「複製回饋文字」就能貼到想記錄的地方。
+      </p>
+      <label for="feedbackInput" class="block-heading" style="font-size:16px;">您的建議或想補充的品項</label>
+      <textarea
+        id="feedbackInput"
+        placeholder="例如：早餐想補鮪魚蛋餅不加美乃滋、外食想看關東煮、這組搭配我覺得很貼近實際..."
+      ></textarea>
+
+      <div class="feedback-actions">
+        <button class="secondary-btn" id="copyFeedbackBtn" type="button">複製回饋文字</button>
+      </div>
+
+      <div class="feedback-status" id="feedbackStatus" aria-live="polite"></div>
+      <div class="feedback-preview" id="feedbackPreview"></div>
+      <p class="disclaimer">
+        ※ 提醒：本工具僅供日常飲食選擇與點餐參考，不取代醫師診斷或個別營養處方；回饋內容請避免填寫個人敏感個資或病歷細節。
+      </p>
+    </section>
   </div>
 
   <script>
@@ -610,7 +682,8 @@
       ff: null,
       ffNote: "",
       bf: null,
-      bfNote: ""
+      bfNote: "",
+      feedbackText: ""
     };
 
     const stapleLight = {
@@ -640,101 +713,148 @@
       none: "red"
     };
 
+    const labelMaps = {
+      health: {
+        both: "LDL ＋ HbA1c 雙高",
+        ldl: "LDL 偏高",
+        hba1c: "HbA1c 偏高"
+      },
+      mode: {
+        breakfast: "早餐專區",
+        home: "家常／一般配餐",
+        eatingout: "常見外食（10種）",
+        fastfood: "連鎖速食專區"
+      },
+      staple: {
+        whole_grain: "糙米／五穀／燕麥飯",
+        root_veg: "地瓜／南瓜／芋頭",
+        white_rice: "白飯／白麵／饅頭",
+        soup_noodle: "湯麵類（牛肉麵、陽春麵）",
+        sauce_rice: "醬汁／咖哩／燴飯類",
+        fried_pastry: "炒飯／炒麵／麵包糕點",
+        none: "不吃主食／無澱粉"
+      },
+      protein: {
+        included: "已含在主食中",
+        lean_poultry_egg: "去皮雞肉／雞蛋／無糖豆漿",
+        fish_tofu: "魚肉／豆腐／豆干",
+        shrimp_squid: "蝦／魷魚／花枝（水煮/蒸/烤）",
+        skin_on_poultry: "帶皮雞肉（白斬雞/烤雞腿）",
+        lean_pork_beef: "瘦豬肉／牛肉／牛排（挑瘦）",
+        duck_lamb: "鴨肉／羊肉（去皮/少油）",
+        fatty_processed: "五花肉／培根／香腸／炸物"
+      },
+      veggie: {
+        lots: "青菜充足（約半盤以上）",
+        little: "只有一點青菜",
+        none: "幾乎沒有青菜"
+      },
+      eat: {
+        bento: "自助餐／便當",
+        braised_pork: "滷肉飯／小吃店",
+        dumpling: "水餃／鍋貼",
+        luwei: "滷味／鹹水雞",
+        donburi: "丼飯／定食",
+        fried_rice_noodle: "炒飯／炒麵／燴飯",
+        ramen: "拉麵",
+        hotpot: "一般／小火鍋",
+        hotpot_ayce: "鴛鴦鍋／吃到飽火鍋",
+        bbq: "烤肉"
+      },
+      ff: {
+        mcdonalds: "麥當勞",
+        subway: "SUBWAY",
+        mos: "摩斯漢堡",
+        kfc: "肯德基",
+        burgerking: "漢堡王",
+        pizzahut: "必勝客",
+        dominos: "達美樂"
+      }
+    };
+
     const breakfastData = {
-      traditional: {
-        traffic: "yellow",
-        trafficText: "🟡 黃燈（精緻澱粉與醬汁偏多，挑對品項即可）",
-        name: "中式早餐店（蛋餅、蘿蔔糕、飯糰）",
-        pick: "優先點「原味蛋餅、蔬菜蛋餅、起司蛋餅」或「水煮蛋／茶葉蛋」，搭配無糖豆漿；醬油膏或甜辣醬少蘸一點。",
-        avoid: "紫米/白米飯糰包油條、煎得過油的蘿蔔糕加蛋、培根蛋餅，以及含糖豆漿或含糖奶茶。",
+      egg_pancake_light: {
+        traffic: "green",
+        trafficText: "🟢 綠燈（清爽蛋餅選擇，控醬與搭無糖飲即可）",
+        name: "清爽蛋餅類",
+        pick: "例如原味蛋餅、蔬菜蛋餅或起司蛋餅（少醬）；醬油膏／甜辣醬建議另外放或少蘸一點，飲料選無糖豆漿、無糖茶或黑咖啡。",
+        avoid: "淋大量高鈉醬油膏或甜辣醬、搭配含糖紅茶／奶茶／甜豆漿。",
         healthTip: {
-          both: "中式早餐極易「澱粉＋糖分」爆表。建議：蛋餅醬另外放＋改無糖豆漿。",
-          ldl: "避開油條、培根與過多的煎油，蛋餅或饅頭夾蛋相對低脂安全。",
-          hba1c: "飯糰與蘿蔔糕升糖較快，建議優先選蛋餅加蛋，搭配無糖豆漿延緩血糖上升。"
+          both: "原味或蔬菜蛋餅搭配無糖飲，是中式早餐裡很穩健的選擇。",
+          ldl: "油脂含量相對好掌控，避免加點培根、火腿或薯餅即可。",
+          hba1c: "餅皮澱粉量適中，搭配蛋與無糖豆漿有助平穩餐後血糖。"
         }
       },
-      shao_bing: {
+      egg_pancake_heavy: {
         traffic: "red",
-        trafficText: "🔴 紅燈（飽和脂肪與熱量雙高，需特別警惕）",
-        name: "中式燒餅油條店",
-        pick: "若想吃燒餅，建議選「燒餅夾蛋」或「燒餅夾生菜」，不加油條；飲料選無糖豆漿或鹹豆漿（少香油）。",
-        avoid: "燒餅包油條、炸油條雙份、甜豆漿與加大量香油辣油的鹹豆漿。",
+        trafficText: "🔴 紅燈（加工肉品、薯餅或煎油偏高，需多加留意）",
+        name: "較油／加工蛋餅類",
+        pick: "例如火腿蛋餅、培根蛋餅、薯餅蛋餅或煎得過油／重醬的蛋餅；若想吃，建議控制份量、減少醬汁並搭配無糖飲，下次可改挑原味或蔬菜蛋餅。",
+        avoid: "同時加點薯餅與培根、醬汁全淋、再配含糖飲料。",
         healthTip: {
-          both: "燒餅製作過程揉入大量油脂，油條又是高溫重油炸，雙高族群建議避開「燒餅＋油條」組合。",
-          ldl: "酥皮燒餅與油條的飽和脂肪與反式脂肪風險較高，LDL 偏高者宜少吃。",
-          hba1c: "麵粉酥餅＋油條吸收快，容易引起餐後血糖急升，建議換成蒸饅頭夾蛋或蛋餅。"
+          both: "加工肉與炸薯餅會同時拉高油脂、鈉與熱量，建議減量並改配無糖飲。",
+          ldl: "培根、火腿與薯餅油脂與飽和脂肪較高，LDL 偏高者建議少選。",
+          hba1c: "薯餅屬於澱粉加炸油，搭配餅皮容易讓血糖與熱量雙雙上升。"
         }
       },
-      western: {
-        traffic: "yellow",
-        trafficText: "🟡 黃燈（注意美乃滋、加工肉與飲料）",
-        name: "西式早餐店（三明治、漢堡、吐司）",
-        pick: "選「蔬菜蛋吐司、烤雞腿堡、鮪魚吐司（少美乃滋）」，請店家「不抹美乃滋／奶油」，飲料改選無糖綠茶、黑咖啡或無糖豆漿。",
-        avoid: "培根/火腿/卡啦雞腿堡、厚片土司（奶酥/花生/巧克力）、冰奶茶或含糖紅茶。",
-        healthTip: {
-          both: "西式早餐兩大隱形殺手是「美乃滋」與「大杯含糖奶茶」，去美乃滋＋無糖飲能大幅降負擔。",
-          ldl: "抹醬（美乃滋/奶油）與培根香腸高脂，改選煎蛋與烤雞肉更安心。",
-          hba1c: "吐司與果醬澱粉高，建議搭配夾蛋與蔬菜，並絕對避開含糖奶茶。"
-        }
-      },
-      convenience: {
+      toast_sandwich_light: {
         traffic: "green",
-        trafficText: "🟢 綠燈（成分標示清楚，最好掌控的優質選擇）",
-        name: "超商早餐組合",
-        pick: "推薦組合：<strong>蒸地瓜／雞肉飯糰／全麥三明治 ＋ 無糖高纖豆漿／黑咖啡／茶葉蛋 2 顆</strong>。",
-        avoid: "熱狗堡、肉鬆飯糰過量、夾心麵包/熱狗/洋芋片，以及含糖拿鐵/含糖奶茶。",
+        trafficText: "🟢 綠燈（清爽夾餡搭配，注意抹醬與飲料即可）",
+        name: "清爽吐司／三明治",
+        pick: "例如蔬菜蛋吐司、烤／嫩煎雞肉三明治、鮪魚三明治（少美乃滋）；建議請店家「不抹美乃滋／不塗奶油」，飲料改選無糖飲。",
+        avoid: "美乃滋或奶油抹太厚、鮪魚沙拉拌入大量美乃滋、搭配含糖奶茶。",
         healthTip: {
-          both: "超商是控血糖與血脂的神隊友！直奔「地瓜/茶葉蛋/無糖豆漿」區最穩作法。",
-          ldl: "成分標示明確，優先挑選脂質低於 10g 的飯糰或地瓜搭配豆漿。",
-          hba1c: "天然根莖澱粉（地瓜）搭配蛋白（豆漿/蛋），能保持極佳的餐後血糖平穩。"
+          both: "去美乃滋並搭無糖飲，能讓三明治／吐司清爽很多。",
+          ldl: "減少美乃滋與奶油抹醬，就能避開不少隱藏油脂。",
+          hba1c: "夾蛋或雞肉／鮪魚有助延緩血糖上升，建議避免含糖飲與甜抹醬。"
         }
       },
-      light_yogurt: {
-        traffic: "green",
-        trafficText: "🟢 綠燈（清爽高纖，非常適合健康維持）",
-        name: "輕食／優格／沙拉",
-        pick: "選<strong>無糖優格／希臘優格</strong>，搭配一小把堅果或適量低GI水果（芭樂、蘋果、奇異果），或搭配雞胸肉沙拉（醬料選和風醬/油醋醬少許）。",
-        avoid: "加滿果醬/黑糖的含糖優格、千島醬/凱薩醬加爆，以及含糖水果乾粒。",
-        healthTip: {
-          both: "極佳的高纖清爽組合，注意「優格選無糖、沙拉醬少加」即可。",
-          ldl: "高纖蔬菜與優格有益腸道代謝，堅果提供優質不飽和脂肪，對血脂大有幫助。",
-          hba1c: "優格務必確認無添加糖，水果適量即可，避免血糖起伏。"
-        }
-      },
-      oats: {
-        traffic: "green",
-        trafficText: "🟢 綠燈（富含 β-聚葡萄糖，降膽固醇與控糖好幫手）",
-        name: "燕麥／穀片類",
-        pick: "選<strong>大燕麥片／原味沖泡燕麥</strong>，加入無糖豆漿、低脂鮮奶或水，可加一顆水煮蛋增添蛋白質。",
-        avoid: "三合一甜燕麥包、含糖調味穀物片（Cereal）、加很多煉乳或糖漿。",
-        healthTip: {
-          both: "原型燕麥富含水溶性膳食纖維，是壞膽固醇與血糖雙高的黃金食材。",
-          ldl: "燕麥中的膳食纖維有助吸附腸道膽固醇，非常推薦定期食用。",
-          hba1c: "請選需沖泡的原型大燕麥片而非即溶甜燕麥，搭配蛋白質效果更好。"
-        }
-      },
-      brunch: {
+      toast_sandwich_heavy: {
         traffic: "red",
-        trafficText: "🔴 紅燈（熱量、油脂與精緻澱粉集中，需特別警惕）",
-        name: "早午餐店（Brunch 拼盤）",
-        pick: "挑選含有「生菜沙拉、水煮/嫩煎雞胸肉、炒蛋/水波蛋」的拼盤；麵包選全麥或麵包吃一半；飲料選無糖茶或黑咖啡。",
-        avoid: "法式吐司淋糖漿、培根香腸大拼盤、薯餅薯條、濃湯與含糖果汁/奶茶。",
+        trafficText: "🔴 紅燈（炸物、加工肉或甜抹醬高負擔，需特別警惕）",
+        name: "高負擔三明治／厚片",
+        pick: "例如卡啦雞腿三明治／堡、培根／火腿／熱狗組合，或奶酥／花生／巧克力厚片；建議份量減半、與人分食，或改選清爽夾餡。",
+        avoid: "厚片抹醬加量、炸雞腿堡再配含糖大冰奶。",
         healthTip: {
-          both: "早午餐拼盤經常隱藏大量奶油、糖漿與加工肉，建議與朋友分食或挑選原形食材為主的品項。",
-          ldl: "炸薯餅、煎培根與淋滿奶油的吐司飽和脂肪極高，建議換成沙拉與煎蛋。",
-          hba1c: "法式吐司與鬆餅糖分很高，建議先吃沙拉與蛋肉，甜澱粉只吃幾口嚐味。"
+          both: "炸雞皮、加工肉與奶酥／花生厚片油脂或糖分都高，建議少吃或分食。",
+          ldl: "卡啦雞腿炸衣與奶酥／奶油抹醬飽和脂肪高，血脂偏高者需警惕。",
+          hba1c: "甜抹醬與含糖飲料對血糖影響較大，建議改選鹹食清爽版與無糖飲。"
         }
       },
-      noodle_porridge: {
-        traffic: "yellow",
-        trafficText: "🟡 黃燈（澱粉偏高，需注意蔬菜與蛋白質補充）",
-        name: "傳統麵攤／鹹粥",
-        pick: "若吃乾麵或粥，建議搭配「燙青菜」與「滷蛋／豆干／嘴邊肉（瘦）」，湯麵盡量少喝湯。",
-        avoid: "加一大匙油蔥豬油、高油肉燥乾麵、炸肉紅燒肉、酸菜肚片重鹹湯。",
+      convenience_light: {
+        traffic: "green",
+        trafficText: "🟢 綠燈（成分標示清楚，好掌控的早餐組合）",
+        name: "超商／居家清爽組合",
+        pick: "例如蒸地瓜、茶葉蛋、原味／無糖燕麥、無糖優格或雞肉／蛋沙拉，搭配無糖高纖豆漿、黑咖啡或無糖茶。",
+        avoid: "含糖調味優格、甜味即溶燕麥包、熱狗或含糖拿鐵／奶茶。",
         healthTip: {
-          both: "傳統台式早餐澱粉比例偏高，務必加點一盤燙青菜與滷蛋來平衡。",
-          ldl: "避開紅燒肉、三層肉與淋在麵上的大量豬油/油蔥。",
-          hba1c: "白粥與乾麵升糖快，請勿單吃一碗麵，一定要配青菜與豆干/蛋。"
+          both: "原型食材搭配無糖飲，是兼顧血脂與血糖很實用的日常選擇。",
+          ldl: "可留意營養標示挑低飽和脂肪品項，多搭配無糖豆漿或燕麥。",
+          hba1c: "地瓜或燕麥搭配蛋、豆漿與無糖飲，血糖波動相對平穩。"
+        }
+      },
+      rice_radish_porridge: {
+        traffic: "yellow",
+        trafficText: "🟡 黃燈（澱粉與做法差異大，需看份量與配料）",
+        name: "飯糰／蘿蔔糕／麵粥類",
+        pick: "飯糰可選紫米或份量適中、少油條／肉鬆過量；蘿蔔糕或麵粥建議搭配蛋、豆干或青菜，少加高油肉燥或重鹹湯汁。",
+        avoid: "大顆飯糰包雙份油條、煎得過油的蘿蔔糕、大量肥肉燥或含糖飲料。",
+        healthTip: {
+          both: "這類主食澱粉比例較高，建議控制份量並補一點蛋白質或蔬菜。",
+          ldl: "留意煎油、油條、肉鬆與肥肉燥，避免高油重醬。",
+          hba1c: "米飯、蘿蔔糕與粥品升糖較快，建議控份量並搭配蛋／豆／菜一起吃。"
+        }
+      },
+      fried_pastry: {
+        traffic: "red",
+        trafficText: "🔴 紅燈（高油酥炸組合，需特別警惕）",
+        name: "燒餅油條／酥炸類",
+        pick: "例如燒餅油條、單點油條、炸雞塊或薯餅拼盤；若想吃，建議只吃少量或改選「燒餅夾蛋」不加油條，飲料選無糖豆漿或無糖茶。",
+        avoid: "整套燒餅＋油條＋甜豆漿、炸物拼盤一次吃完。",
+        healthTip: {
+          both: "酥皮與油炸物油脂與熱量集中，雙高族群建議避開或嚴格減量。",
+          ldl: "燒餅揉油與油炸物飽和脂肪高，LDL 偏高者宜少碰。",
+          hba1c: "精緻澱粉加上高油脂與甜飲，容易讓餐後血糖與負擔加重。"
         }
       }
     };
@@ -1058,14 +1178,57 @@
       return { cls: "red", label: "🔴 需多加警惕，建議控制份量與油脂" };
     }
 
+    function getCurrentSelectionSummary() {
+      const parts = [
+        `健康重點：${labelMaps.health[state.health]}`,
+        `情境：${labelMaps.mode[state.mode]}`
+      ];
+
+      if (state.mode === "breakfast") {
+        if (state.bf && breakfastData[state.bf]) {
+          parts.push(`早餐品項：${breakfastData[state.bf].name}`);
+        }
+        if (state.bfNote.trim()) {
+          parts.push(`早餐補充：${state.bfNote.trim()}`);
+        }
+      } else if (state.mode === "home") {
+        if (state.staple) parts.push(`主食：${labelMaps.staple[state.staple]}`);
+        if (state.protein) parts.push(`蛋白質：${labelMaps.protein[state.protein]}`);
+        if (state.veggie) parts.push(`蔬菜：${labelMaps.veggie[state.veggie]}`);
+        if (state.homeNote.trim()) parts.push(`補充：${state.homeNote.trim()}`);
+      } else if (state.mode === "eatingout") {
+        if (state.eat) parts.push(`外食：${labelMaps.eat[state.eat]}`);
+        if (state.eatNote.trim()) parts.push(`外食補充：${state.eatNote.trim()}`);
+      } else if (state.mode === "fastfood") {
+        if (state.ff) parts.push(`速食：${labelMaps.ff[state.ff]}`);
+        if (state.ffNote.trim()) parts.push(`速食補充：${state.ffNote.trim()}`);
+      }
+
+      return parts.join("｜");
+    }
+
+    function buildFeedbackMessage() {
+      const userComment = state.feedbackText.trim() || "（尚未填寫文字）";
+      return [
+        "【食安心控・飲食小助手回饋】",
+        getCurrentSelectionSummary(),
+        `回饋內容：${userComment}`
+      ].join("\n");
+    }
+
+    function updateFeedbackPreview() {
+      document.getElementById("feedbackPreview").textContent = buildFeedbackMessage();
+    }
+
+    function setFeedbackStatus(msg, isError = false) {
+      const el = document.getElementById("feedbackStatus");
+      el.textContent = msg;
+      el.style.color = isError ? "#c5221f" : "#137333";
+    }
+
     function renderRecommendation() {
       const area = document.getElementById("recommendationArea");
-      const healthLabel =
-        state.health === "both"
-          ? "LDL ＋ HbA1c 雙高"
-          : state.health === "ldl"
-          ? "LDL 偏高"
-          : "HbA1c 偏高";
+      const healthLabel = labelMaps.health[state.health];
 
       let html = "";
 
@@ -1075,7 +1238,7 @@
           html = `
             <div class="result-box info">
               <div class="result-title">目前狀態：${healthLabel}</div>
-              <p style="margin:0;">請點選上方 8 種常見早餐情境之一，即可查看專屬點餐與吃法建議。</p>
+              <p style="margin:0;">請點選上方早餐品項（🟢清爽／🟡看份量做法／🔴高油加工提醒），查看專屬點餐與調整建議。</p>
             </div>
           `;
         } else {
@@ -1104,7 +1267,7 @@
 
           html += `
             <div class="order-banner">
-              💡 早餐黃金口訣：<strong>飲料一律選無糖、抹醬少加、優先補充蛋白質（蛋/豆漿）延緩血糖起伏</strong>。
+              💡 早餐黃金口訣：<strong>飲料選無糖、抹醬少加、優先留意蛋白質與清爽做法</strong>。
             </div>
           `;
         }
@@ -1294,6 +1457,7 @@
       }
 
       area.innerHTML = html;
+      updateFeedbackPreview();
     }
 
     function escapeHtml(str) {
@@ -1302,6 +1466,32 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+    }
+
+    async function copyTextWithFallback(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (_) {
+          // fallback below
+        }
+      }
+      const tempArea = document.createElement("textarea");
+      tempArea.value = text;
+      tempArea.setAttribute("readonly", "");
+      tempArea.style.position = "fixed";
+      tempArea.style.opacity = "0";
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (_) {
+        copied = false;
+      }
+      document.body.removeChild(tempArea);
+      return copied;
     }
 
     // 綁定健康狀態按鈕
@@ -1408,6 +1598,23 @@
     bindNoteInput("eatNoteInput", "eatNote");
     bindNoteInput("ffNoteInput", "ffNote");
 
+    // 綁定回饋輸入與複製
+    const feedbackInputEl = document.getElementById("feedbackInput");
+    feedbackInputEl.addEventListener("input", () => {
+      state.feedbackText = feedbackInputEl.value;
+      updateFeedbackPreview();
+    });
+
+    document.getElementById("copyFeedbackBtn").addEventListener("click", async () => {
+      const msg = buildFeedbackMessage();
+      const ok = await copyTextWithFallback(msg);
+      if (ok) {
+        setFeedbackStatus("已複製回饋文字，您可以直接貼到想記錄的地方。");
+      } else {
+        setFeedbackStatus("無法自動複製，請直接選取下方預覽文字手動複製。", true);
+      }
+    });
+
     // 清除按鈕
     document.getElementById("resetBtn").addEventListener("click", () => {
       state.staple = null;
@@ -1435,7 +1642,7 @@
       renderRecommendation();
     });
 
-    // 初始渲染
+    // 初始化
     updateHomeProgressText();
     renderRecommendation();
   </script>
